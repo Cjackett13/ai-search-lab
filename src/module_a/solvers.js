@@ -111,11 +111,14 @@ function swapTiles(currentState, newRow, newCol){
 function checkIfGoalReached(currentState){
         for (let row = 0; row < 3; row++) {
             for (let col = 0; col < 3; col++) {
-
-
+                    // checking invidual tiels
+                if (currentState[row][col] !== goal_State[row][col]){
+                    return false;  //stop immediately if one is w2orng 
+            }
 
         }
     }
+    return true; // found all tiles are correct
 }
 console.log(findBlankSlot(starting_State));
 console.log(findBlankSlot(goal_State));
