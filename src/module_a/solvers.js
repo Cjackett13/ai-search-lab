@@ -47,11 +47,16 @@ function findBlankSlot(state){
     }
 }
 
+
+
+
+
 function identifyLegalMoves(state){
 // Approach to this is to use somthing similar  to what we caw in the lecture (row,col)
 // there are 4 edges per node / vertex, we will try up, down, left , and right (this requires either adding 1 or subtracting 1)
 //if the result of the addition / subtraction is no in the legal range of (0,0) to (2,2), we can assume its an illegal move if the code ran right lol
     zeroLocation = findBlankSlot(state);
+    [row,col] = zeroLocation;
 
     // list of moves
     directions = [
@@ -74,13 +79,45 @@ function identifyLegalMoves(state){
 
         //validating check
         if (newRow >=0 && newRow <= 2 && newCol >= 0 && newCol <= 2){
-            legaMoves.push([newRow, newCol]) // add to list if we can validate its withinh the 3x3 bounds
+            legalMoves.push([newRow, newCol]) // add to list if we can validate its withinh the 3x3 bounds
         }
     
     }
+
+    return legalMoves;
 }
 
-console.log(findBlank(starting_State));
-console.log(findBlank(goal_State));
+// making the actual change of tiles
+function swapTiles(currentState, newRow, newCol){
+    newState = [];
+
+    [row,col] = findBlankSlot(currentState);
+
+    for(i = 0; i<3; i++){
+        newState[i] = [];
+        for(j = 0; j<3; j++){
+            newState[i][j] = currentState[i][j];
+        }
+    }
+    //swapping using a temp
+    temp = newState[row][col];
+    newState[row][col] = newState[newRow][newCol];
+    newState[newRow][newCol] = temp;
+
+    return newState;
+    
+}
+// chekcign to see if we have found the goal
+function checkIfGoalReached(currentState){
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
+
+
+
+        }
+    }
+}
+console.log(findBlankSlot(starting_State));
+console.log(findBlankSlot(goal_State));
 
 
