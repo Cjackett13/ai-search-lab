@@ -47,11 +47,37 @@ function findBlankSlot(state){
     }
 }
 
-function getLegalMoves(state){
+function identifyLegalMoves(state){
 // Approach to this is to use somthing similar  to what we caw in the lecture (row,col)
 // there are 4 edges per node / vertex, we will try up, down, left , and right (this requires either adding 1 or subtracting 1)
 //if the result of the addition / subtraction is no in the legal range of (0,0) to (2,2), we can assume its an illegal move if the code ran right lol
+    zeroLocation = findBlankSlot(state);
 
+    // list of moves
+    directions = [
+        [-1,0], // up move
+        [1,0], // down move
+        [0,-1], // left move
+        [0,1] // right move
+    ];
+    
+    // sotrinng these moves after checking 
+    legalMoves=[];
+
+    for(i = 0; i < 4; i++){
+        //this is to acces the 2d aray and find the change
+        rowChange = directions[i][0];
+        colChange = directions[i][1];
+        // add the change
+        newRow = row + rowChange;
+        newCol = col + colChange;
+
+        //validating check
+        if (newRow >=0 && newRow <= 2 && newCol >= 0 && newCol <= 2){
+            legaMoves.push([newRow, newCol]) // add to list if we can validate its withinh the 3x3 bounds
+        }
+    
+    }
 }
 
 console.log(findBlank(starting_State));
