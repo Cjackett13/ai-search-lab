@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Search Lab</title>
+    <link rel="stylesheet" href="./src/shared/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>AI Search Lab</h1>
+      <p>8-Puzzle Solver and Tic-Tac-Toe AI</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-button active" data-tab="module-a">
+        8-Puzzle Solver
+      </button>
+      <button class="tab-button" data-tab="module-b">Tic-Tac-Toe AI</button>
+      <button class="tab-button" data-tab="dashboard">
+        Performance Dashboard
+      </button>
+    </nav>
+
+    <main>
+      <section id="module-a" class="tab-panel active">
+        <h2>Module A: 8-Puzzle Solver</h2>
+
+        <div class="layout-grid">
+          <div class="card">
+            <h3>Puzzle Setup</h3>
+
+            <label for="imageUpload">Upload Puzzle Image (.jpg/.png)</label>
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/png, image/jpeg"
+            />
+
+            <div class="button-row">
+              <button id="defaultPuzzleBtn">Use Default Numbered Puzzle</button>
+              <button id="shuffleBtn">Shuffle</button>
+            </div>
+
+            <label for="algorithmSelect">Algorithm</label>
+            <select id="algorithmSelect">
+              <option value="bfs">BFS</option>
+              <option value="dijkstra">Dijkstra</option>
+              <option value="astar">A*</option>
+            </select>
+
+            <div class="button-row">
+              <button id="solveBtn">Solve</button>
+              <button id="stepBtn">Next Step</button>
+              <button id="autoPlayBtn">Auto Play</button>
+              <button id="resetBtn">Reset</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>8-Puzzle Board</h3>
+            <div id="puzzleBoard" class="puzzle-board"></div>
+            <p id="puzzleStatus" class="status-text">Ready.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="module-b" class="tab-panel">
+        <h2>Module B: Tic-Tac-Toe AI</h2>
+        <div class="card">
+          <p>This area is reserved for Person 2’s Tic-Tac-Toe UI.</p>
+          <div id="ticTacToeRoot"></div>
+        </div>
+      </section>
+
+      <section id="dashboard" class="tab-panel">
+        <h2>Unified Performance Dashboard</h2>
+
+        <div class="dashboard-grid">
+          <div class="metric-card">
+            <span>Decision Time</span>
+            <strong id="metricDecisionTime">0 ms</strong>
+          </div>
+
+          <div class="metric-card">
+            <span>Nodes Explored</span>
+            <strong id="metricNodesExplored">0</strong>
+          </div>
+
+          <div class="metric-card">
+            <span>Solution Length</span>
+            <strong id="metricSolutionLength">0</strong>
+          </div>
+
+          <div class="metric-card">
+            <span>Pruning Efficiency</span>
+            <strong id="metricPruningEfficiency">N/A</strong>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Latest Run Summary</h3>
+          <pre id="runSummary">No algorithm has been run yet.</pre>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/shared/app.js"></script>
+  </body>
+</html>
