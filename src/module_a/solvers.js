@@ -6,19 +6,19 @@
 function manhattanDistance(state) {
 
     // Where each tile number SHOULD be in the goal state
-    goalRow = { 1:0, 2:0, 3:0, 4:1, 5:1, 6:1, 7:2, 8:2, 0:2 };
-    goalCol = { 1:0, 2:1, 3:2, 4:0, 5:1, 6:2, 7:0, 8:1, 0:2 };
+    const goalRow = { 1:0, 2:0, 3:0, 4:1, 5:1, 6:1, 7:2, 8:2, 0:2 };
+    const goalCol = { 1:0, 2:1, 3:2, 4:0, 5:1, 6:2, 7:0, 8:1, 0:2 };
 
-    total = 0;
+    let total = 0;
 
-    for (row = 0; row < 3; row++) {
-        for (col = 0; col < 3; col++) {
-            tile = state[row][col];
+    for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+            let tile = state[row][col];
 
             if (tile !== 0) {
                 // How far is this tile from where it belongs?
-                rowDistance = Math.abs(row - goalRow[tile]);
-                colDistance = Math.abs(col - goalCol[tile]);
+                let rowDistance = Math.abs(row - goalRow[tile]);
+                let colDistance = Math.abs(col - goalCol[tile]);
                 total = total + rowDistance + colDistance;
             }
         }
@@ -29,21 +29,21 @@ function manhattanDistance(state) {
 
 //B BFS 
 function solveBFS(startState) {
-     startTime = performance.now(); // start timer 
-     nodesExplored = 0;
+    let startTime = performance.now(); // start timer 
+    let nodesExplored = 0;
 
     //the node we came from (so we can trace back the path)
-    queue = [];
+    let queue = [];
     queue.push({ state: startState, parent: null });
 
     // visited to keepa track of states we already saw so we don't explore the same board twice
-    visited = new Set();
+    let visited = new Set();
     visited.add(boardToString(startState));
 
     while (queue.length > 0) {
 
         // Take from the fornt of the queue (old state first)
-         current = queue.shift();
+        let current = queue.shift();
         nodesExplored++;
 
         // check to see if wee hit the goal state 
@@ -56,13 +56,14 @@ function solveBFS(startState) {
         }
 
         // Find all legal moves 
-        moves = identifyLegalMoves(current.state);
+        let moves = identifyLegalMoves(current.state);
 
-        for ( i = 0; i < moves.length; i++) {
-            newRow   = moves[i][0];
-            newCol   = moves[i][1];
-            newState = swapTiles(current.state, newRow, newCol);
-            key      = boardToString(newState);
+        for (let i = 0; i < moves.length; i++) {
+            let newRow = moves[i][0];
+            let newCol = moves[i][1];
+            let newState = swapTiles(current.state, newRow, newCol);
+
+            let key = boardToString(newState);
 
             // Only add it if we havent seen this board before
             if (!visited.has(key)) {
@@ -78,14 +79,14 @@ function solveBFS(startState) {
 
 // dijkstra
 function solveDijkstra(startState) {
-    startTime     = performance.now();
-    nodesExplored = 0;
+    let startTime     = performance.now();
+    let nodesExplored = 0;
 
     // storuing cost
-    priorityQueue = [];
+    let priorityQueue = [];
     priorityQueue.push({ state: startState, parent: null, cost: 0 });
 
-    visited = {};
+    let visited = {};
 
     while (priorityQueue.length > 0) {
 
@@ -94,8 +95,8 @@ function solveDijkstra(startState) {
             return a.cost - b.cost;
         });
 
-        current = priorityQueue.shift();
-        key     = boardToString(current.state);
+        let current = priorityQueue.shift();
+        let key = boardToString(current.state);
 
         // Skip if we already processed this state
         if (visited[key]) {
@@ -113,32 +114,33 @@ function solveDijkstra(startState) {
             };
         }
 
-        moves = identifyLegalMoves(current.state);
+        let moves = identifyLegalMoves(current.state);
 
-        for (i = 0; i < moves.length; i++) {
-            newRow   = moves[i][0];
-            newCol   = moves[i][1];
-            newState = swapTiles(current.state, newRow, newCol);
-            newKey   = boardToString(newState);
+        for (let i = 0; i < moves.length; i++) {
+            let newRow = moves[i][0];
+            let newCol = moves[i][1];
+            let newState = swapTiles(current.state, newRow, newCol);
+
+            let newKey = boardToString(newState);
 
             if (!visited[newKey]) {
                 priorityQueue.push({
                     state:  newState,
                     parent: current,
                     cost:   current.cost + 1,  // incremnt for each move
-            });
+                });
+            }
         }
-    }
     }
 
     return null;
 }
-
+// astar 
 function solveAStar(startState) {
-    startTime     = performance.now();
-    nodesExplored = 0;
+    let startTime = performance.now();
+    let nodesExplored = 0;
 
-    priorityQueue = [];
+    let priorityQueue = [];
     priorityQueue.push({
         state:  startState,
         parent: null,
@@ -146,7 +148,7 @@ function solveAStar(startState) {
         f: manhattanDistance(startState),     
     });
 
-    visited = {};
+    let visited = {};
 
     while (priorityQueue.length > 0) {
 
@@ -155,8 +157,8 @@ function solveAStar(startState) {
             return a.f - b.f;
         });
 
-        current = priorityQueue.shift();
-        key     = boardToString(current.state);
+        let current = priorityQueue.shift();
+        let key = boardToString(current.state);
 
         if (visited[key]) {
             continue;
@@ -167,23 +169,23 @@ function solveAStar(startState) {
 
         if (checkIfGoalReached(current.state)) {
             return {
-                path:          traceSolution(current),
+                path: traceSolution(current),
                 nodesExplored: nodesExplored,
-                timeMs:        performance.now() - startTime,
+                timeMs: performance.now() - startTime,
             };
         }
 
-        moves = identifyLegalMoves(current.state);
+        let moves = identifyLegalMoves(current.state);
 
         for (i = 0; i < moves.length; i++) {
-            newRow   = moves[i][0];
-            newCol   = moves[i][1];
-            newState = swapTiles(current.state, newRow, newCol);
-            newKey   = boardToString(newState);
+            let newRow = moves[i][0];
+            let newCol = moves[i][1];
+            let newState = swapTiles(current.state, newRow, newCol);
+            newKey = boardToString(newState);
 
             if (!visited[newKey]) {
-                g = current.g + 1;               // incremntign for move
-                h = manhattanDistance(newState);  // checking the est of moves 
+                let g = current.g + 1;               // incremntign for move
+                let h = manhattanDistance(newState);  // checking the est of moves 
                 priorityQueue.push({
                     state:  newState,
                     parent: current,
