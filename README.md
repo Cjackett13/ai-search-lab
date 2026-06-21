@@ -2,7 +2,7 @@ AI Search Lab — 8-Puzzle Solver & Tic-Tac-Toe with AI
 
 ## Overview
 
-<!-- 
+
 
 ai-search-lab is a app that demonstates two search categories:
 
@@ -19,7 +19,7 @@ Ealien - UI & Integration
 
 Built by Julian Sanchez, Christie Jackett, and Myckheal Hosang for CAI4002 RVCC 1265 | Summer C.
 
--->
+
 
 ## How to Run
 <!-- 
