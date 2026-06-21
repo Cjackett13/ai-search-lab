@@ -145,9 +145,15 @@ const MARKUP = `
   <div class="ttt-status" data-role="status">Pick a mode and start a game.</div>
 
   <div class="ttt-board" data-role="board">
-    ${[0, 1, 2, 3, 4, 5, 6, 7, 8]
-      .map(i => `<button class="ttt-cell" data-index="${i}"></button>`)
-      .join('')}
+    <button class="ttt-cell" data-index="0"></button>
+    <button class="ttt-cell" data-index="1"></button>
+    <button class="ttt-cell" data-index="2"></button>
+    <button class="ttt-cell" data-index="3"></button>
+    <button class="ttt-cell" data-index="4"></button>
+    <button class="ttt-cell" data-index="5"></button>
+    <button class="ttt-cell" data-index="6"></button>
+    <button class="ttt-cell" data-index="7"></button>
+    <button class="ttt-cell" data-index="8"></button>
   </div>
 
   <div class="ttt-metrics">
@@ -190,16 +196,18 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
   injectStyles();
   root.innerHTML = MARKUP;
 
-  const q = selector => root.querySelector(selector);
+  function findElement(selector) {
+    return root.querySelector(selector);
+  }
   const cellEls = Array.from(root.querySelectorAll('.ttt-cell'));
-  const statusEl = q('[data-role="status"]');
-  const benchmarkEl = q('[data-role="benchmark"]');
+  const statusEl = findElement('[data-role="status"]');
+  const benchmarkEl = findElement('[data-role="benchmark"]');
   const metricEls = {
-    algorithm: q('[data-metric="algorithm"]'),
-    move: q('[data-metric="move"]'),
-    time: q('[data-metric="time"]'),
-    nodes: q('[data-metric="nodes"]'),
-    pruning: q('[data-metric="pruning"]'),
+    algorithm: findElement('[data-metric="algorithm"]'),
+    move: findElement('[data-metric="move"]'),
+    time: findElement('[data-metric="time"]'),
+    nodes: findElement('[data-metric="nodes"]'),
+    pruning: findElement('[data-metric="pruning"]'),
   };
 
   const state = {
@@ -220,8 +228,22 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
       const player = state.board[i];
       cell.textContent = player;
       cell.dataset.player = player;
-      cell.classList.toggle('is-last', i === lastMove);
-      cell.classList.toggle('is-win', !!winLine && winLine.includes(i));
+
+      if (i === lastMove) {
+        cell.classList.add('is-last');
+      } else {
+        cell.classList.remove('is-last');
+      }
+
+      let isWinningCell = false;
+      if (winLine && winLine.includes(i)) {
+        isWinningCell = true;
+      }
+      if (isWinningCell) {
+        cell.classList.add('is-win');
+      } else {
+        cell.classList.remove('is-win');
+      }
     });
   }
 
@@ -283,9 +305,14 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
   function startHumanGame() {
     state.mode = 'human';
     state.board = emptyBoard();
-    state.humanPlayer = q('[data-field="human-order"]').value === 'first' ? 'X' : 'O';
+    const playOrder = findElement('[data-field="human-order"]').value;
+    if (playOrder === 'first') {
+      state.humanPlayer = 'X';
+    } else {
+      state.humanPlayer = 'O';
+    }
     state.aiPlayer = opponentOf(state.humanPlayer);
-    state.algorithm = q('[data-field="human-algorithm"]').value;
+    state.algorithm = findElement('[data-field="human-algorithm"]').value;
     state.current = 'X';
     state.over = false;
     state.lastMove = -1;
@@ -338,8 +365,8 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
     state.over = false;
     state.lastMove = -1;
     state.algorithms = {
-      X: q('[data-field="ai-x-algorithm"]').value,
-      O: q('[data-field="ai-o-algorithm"]').value,
+      X: findElement('[data-field="ai-x-algorithm"]').value,
+      O: findElement('[data-field="ai-o-algorithm"]').value,
     };
     render(-1, null);
     stepAiGame();
@@ -375,10 +402,18 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
     state.mode = mode;
     state.over = true;
     root.querySelectorAll('.ttt-tab').forEach(tab => {
-      tab.classList.toggle('is-active', tab.dataset.mode === mode);
+      if (tab.dataset.mode === mode) {
+        tab.classList.add('is-active');
+      } else {
+        tab.classList.remove('is-active');
+      }
     });
     root.querySelectorAll('.ttt-panel').forEach(panel => {
-      panel.classList.toggle('is-hidden', panel.dataset.panel !== mode);
+      if (panel.dataset.panel === mode) {
+        panel.classList.remove('is-hidden');
+      } else {
+        panel.classList.add('is-hidden');
+      }
     });
     state.board = emptyBoard();
     render(-1, null);
@@ -389,9 +424,9 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
   root.querySelectorAll('.ttt-tab').forEach(tab => {
     tab.addEventListener('click', () => selectMode(tab.dataset.mode));
   });
-  q('[data-action="human-start"]').addEventListener('click', startHumanGame);
-  q('[data-action="ai-start"]').addEventListener('click', startAiGame);
-  q('[data-action="benchmark"]').addEventListener('click', runBenchmark);
+  findElement('[data-action="human-start"]').addEventListener('click', startHumanGame);
+  findElement('[data-action="ai-start"]').addEventListener('click', startAiGame);
+  findElement('[data-action="benchmark"]').addEventListener('click', runBenchmark);
 
   selectMode('human');
 }

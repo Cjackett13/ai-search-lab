@@ -5,9 +5,12 @@ const WINNING_LINES = [
   [0, 4, 8], [2, 4, 6],
 ];
 
-const now = typeof performance !== 'undefined' && performance.now
-  ? () => performance.now()
-  : () => Date.now();
+function currentTimeMs() {
+  if (typeof performance !== 'undefined' && performance.now) {
+    return performance.now();
+  }
+  return Date.now();
+}
 
 export function emptyBoard() {
   return ['', '', '', '', '', '', '', '', ''];
@@ -33,51 +36,74 @@ export function emptyCells(board) {
   return cells;
 }
 
-//check if this player get three in a row
-export function isWinner(board, player) {
-  return WINNING_LINES.some(line => line.every(i => board[i] === player));
-}
-
+//the winning line this player has, or null if they dont have one
 export function winningLine(board, player) {
-  return WINNING_LINES.find(line => line.every(i => board[i] === player)) || null;
+  for (const line of WINNING_LINES) {
+    const first = line[0];
+    const second = line[1];
+    const third = line[2];
+    if (board[first] === player && board[second] === player && board[third] === player) {
+      return line;
+    }
+  }
+  return null;
 }
 
-// board is full + nobody won
+//check if this player got three in a row
+export function isWinner(board, player) {
+  return winningLine(board, player) !== null;
+}
+
+// board is full and nobody won
 export function isDraw(board) {
-  return emptyCells(board).length === 0 && !isWinner(board, 'X') && !isWinner(board, 'O');
+  const boardIsFull = emptyCells(board).length === 0;
+  const someoneWon = isWinner(board, 'X') || isWinner(board, 'O');
+  return boardIsFull && !someoneWon;
 }
 
+//the game is over if someone won or there are no moves left
 export function isTerminal(board, aiPlayer, humanPlayer) {
-  return isWinner(board, aiPlayer) || isWinner(board, humanPlayer) || emptyCells(board).length === 0;
+  if (isWinner(board, aiPlayer)) return true;
+  if (isWinner(board, humanPlayer)) return true;
+  if (emptyCells(board).length === 0) return true;
+  return false;
 }
 
-//high number good,low number bad
+//high number good for our ai, low number bad
 function score(board, depth, aiPlayer, humanPlayer) {
   if (isWinner(board, aiPlayer)) return 10 - depth;
   if (isWinner(board, humanPlayer)) return depth - 10;
   return 0;
 }
 
-//looks at every possible game, picks the best move
+//looks at every possible game and returns the best score it can reach
 export function minimax(board, depth, isMaximizing, aiPlayer, humanPlayer, counter) {
   counter.nodes++;
   if (isTerminal(board, aiPlayer, humanPlayer)) {
     return score(board, depth, aiPlayer, humanPlayer);
   }
+
   if (isMaximizing) {
-    let best = -Infinity;
+    let bestScore = -Infinity;
     for (const cell of emptyCells(board)) {
-      const value = minimax(makeMove(board, cell, aiPlayer), depth + 1, false, aiPlayer, humanPlayer, counter);
-      best = Math.max(best, value);
+      const nextBoard = makeMove(board, cell, aiPlayer);
+      const value = minimax(nextBoard, depth + 1, false, aiPlayer, humanPlayer, counter);
+      if (value > bestScore) {
+        bestScore = value;
+      }
     }
-    return best;
+    return bestScore;
   }
-  let best = Infinity;
+
+  let bestScore = Infinity;
   for (const cell of emptyCells(board)) {
-    const value = minimax(makeMove(board, cell, humanPlayer), depth + 1, true, aiPlayer, humanPlayer, counter);
-    best = Math.min(best, value);
+    const nextBoard = makeMove(board, cell, humanPlayer);
+    const value = minimax(nextBoard, depth + 1, true, aiPlayer, humanPlayer, counter);
+    if (value < bestScore) {
+      bestScore = value;
+    }
   }
-  return best;
+  return bestScore;
 }
 
 // same as minimax but skips branches it doesnt even need to check
@@ -86,56 +112,84 @@ export function alphaBeta(board, depth, alpha, beta, isMaximizing, aiPlayer, hum
   if (isTerminal(board, aiPlayer, humanPlayer)) {
     return score(board, depth, aiPlayer, humanPlayer);
   }
+
   if (isMaximizing) {
-    let best = -Infinity;
+    let bestScore = -Infinity;
     for (const cell of emptyCells(board)) {
-      const value = alphaBeta(makeMove(board, cell, aiPlayer), depth + 1, alpha, beta, false, aiPlayer, humanPlayer, counter);
-      best = Math.max(best, value);
-      alpha = Math.max(alpha, best);
-      if (beta <= alpha) break;
+      const nextBoard = makeMove(board, cell, aiPlayer);
+      const value = alphaBeta(nextBoard, depth + 1, alpha, beta, false, aiPlayer, humanPlayer, counter);
+      if (value > bestScore) {
+        bestScore = value;
+      }
+      if (bestScore > alpha) {
+        alpha = bestScore;
+      }
+      if (beta <= alpha) {
+        break;
+      }
     }
-    return best;
+    return bestScore;
   }
-  let best = Infinity;
+
+  let bestScore = Infinity;
   for (const cell of emptyCells(board)) {
-    const value = alphaBeta(makeMove(board, cell, humanPlayer), depth + 1, alpha, beta, true, aiPlayer, humanPlayer, counter);
-    best = Math.min(best, value);
-    beta = Math.min(beta, best);
-    if (beta <= alpha) break;
+    const nextBoard = makeMove(board, cell, humanPlayer);
+    const value = alphaBeta(nextBoard, depth + 1, alpha, beta, true, aiPlayer, humanPlayer, counter);
+    if (value < bestScore) {
+      bestScore = value;
+    }
+    if (bestScore < beta) {
+      beta = bestScore;
+    }
+    if (beta <= alpha) {
+      break;
+    }
   }
-  return best;
+  return bestScore;
 }
 
-// the root loop both algorithms share so they break ties the same way and agree
+// tries each possible move from this board and keeps the best one
 function runSearch(board, algorithm, aiPlayer, humanPlayer) {
   const counter = { nodes: 0 };
-  let bestScore = -Infinity;
   let bestMove = null;
+  let bestScore = -Infinity;
+
   for (const cell of emptyCells(board)) {
-    const next = makeMove(board, cell, aiPlayer);
-    const value = algorithm === 'alphabeta'
-      ? alphaBeta(next, 1, -Infinity, Infinity, false, aiPlayer, humanPlayer, counter)
-      : minimax(next, 1, false, aiPlayer, humanPlayer, counter);
+    const nextBoard = makeMove(board, cell, aiPlayer);
+
+    let value;
+    if (algorithm === 'alphabeta') {
+      value = alphaBeta(nextBoard, 1, -Infinity, Infinity, false, aiPlayer, humanPlayer, counter);
+    } else {
+      value = minimax(nextBoard, 1, false, aiPlayer, humanPlayer, counter);
+    }
+
     if (value > bestScore) {
       bestScore = value;
       bestMove = cell;
     }
   }
+
   return { bestMove, bestScore, nodes: counter.nodes };
 }
 
 //runs the search and gives back the move plus all the stats for the dashboard
 export function findBestMove(board, algorithm, aiPlayer = 'X') {
   const humanPlayer = opponentOf(aiPlayer);
-  const start = now();
-  const result = runSearch(board, algorithm, aiPlayer, humanPlayer);
-  const decisionTimeMs = now() - start;
 
-  // alpha beta only knows how much it pruned by comparing against a plain minimax pass
+  const startTime = currentTimeMs();
+  const result = runSearch(board, algorithm, aiPlayer, humanPlayer);
+  const decisionTimeMs = currentTimeMs() - startTime;
+
+  // alpha beta only knows how much it saved by comparing against a plain minimax run
   let pruningEfficiency = 'N/A';
   if (algorithm === 'alphabeta') {
-    const baseline = runSearch(board, 'minimax', aiPlayer, humanPlayer).nodes;
-    const percent = baseline === 0 ? 0 : ((baseline - result.nodes) / baseline) * 100;
+    const minimaxNodes = runSearch(board, 'minimax', aiPlayer, humanPlayer).nodes;
+    let percent = 0;
+    if (minimaxNodes > 0) {
+      const nodesSaved = minimaxNodes - result.nodes;
+      percent = (nodesSaved / minimaxNodes) * 100;
+    }
     pruningEfficiency = percent.toFixed(1) + '%';
   }
 
@@ -152,9 +206,13 @@ export function findBestMove(board, algorithm, aiPlayer = 'X') {
 export function compareAlgorithms(board, aiPlayer = 'X') {
   const minimaxResult = findBestMove(board, 'minimax', aiPlayer);
   const alphaBetaResult = findBestMove(board, 'alphabeta', aiPlayer);
-  const percentPruned = minimaxResult.nodesExplored === 0
-    ? 0
-    : ((minimaxResult.nodesExplored - alphaBetaResult.nodesExplored) / minimaxResult.nodesExplored) * 100;
+
+  let percentPruned = 0;
+  if (minimaxResult.nodesExplored > 0) {
+    const nodesSaved = minimaxResult.nodesExplored - alphaBetaResult.nodesExplored;
+    percentPruned = (nodesSaved / minimaxResult.nodesExplored) * 100;
+  }
+
   return {
     minimax: minimaxResult,
     alphabeta: alphaBetaResult,
