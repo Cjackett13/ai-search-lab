@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module B — Tic-Tac-Toe AI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="module-b">
+    <h1>Tic-Tac-Toe AI <span class="subtitle">Minimax &amp; Alpha-Beta</span></h1>
+
+    <section class="controls">
+      <div class="mode-tabs">
+        <button class="tab active" data-mode="human">Human vs AI</button>
+        <button class="tab" data-mode="ai">AI vs AI</button>
+      </div>
+
+      <div class="mode-panel" id="human-panel">
+        <label>Algorithm
+          <select id="human-algorithm">
+            <option value="minimax">Minimax</option>
+            <option value="alphabeta">Alpha-Beta</option>
+          </select>
+        </label>
+        <label>You play
+          <select id="human-order">
+            <option value="first">First (X)</option>
+            <option value="second">Second (O)</option>
+          </select>
+        </label>
+        <button id="human-start">New Game</button>
+      </div>
+
+      <div class="mode-panel hidden" id="ai-panel">
+        <label>X uses
+          <select id="ai-x-algorithm">
+            <option value="minimax">Minimax</option>
+            <option value="alphabeta">Alpha-Beta</option>
+          </select>
+        </label>
+        <label>O uses
+          <select id="ai-o-algorithm">
+            <option value="alphabeta">Alpha-Beta</option>
+            <option value="minimax">Minimax</option>
+          </select>
+        </label>
+        <button id="ai-start">Auto-Play</button>
+      </div>
+    </section>
+
+    <div class="status" id="status">Pick a mode and start a game.</div>
+
+    <div class="board" id="board">
+      <button class="cell" data-index="0"></button>
+      <button class="cell" data-index="1"></button>
+      <button class="cell" data-index="2"></button>
+      <button class="cell" data-index="3"></button>
+      <button class="cell" data-index="4"></button>
+      <button class="cell" data-index="5"></button>
+      <button class="cell" data-index="6"></button>
+      <button class="cell" data-index="7"></button>
+      <button class="cell" data-index="8"></button>
+    </div>
+
+    <section class="metrics">
+      <h2>Last AI Decision</h2>
+      <table>
+        <tbody>
+          <tr><td>Algorithm</td><td id="m-algorithm">—</td></tr>
+          <tr><td>Move (cell)</td><td id="m-move">—</td></tr>
+          <tr><td>Decision time</td><td id="m-time">—</td></tr>
+          <tr><td>Nodes explored</td><td id="m-nodes">—</td></tr>
+          <tr><td>Pruning efficiency</td><td id="m-pruning">—</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="benchmark">
+      <h2>Standardized Position</h2>
+      <p>Empty board, AI first as X — first move only.</p>
+      <button id="run-benchmark">Run Minimax vs Alpha-Beta</button>
+      <pre id="benchmark-output">—</pre>
+    </section>
+  </main>
+
+  <script src="game-logic.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
