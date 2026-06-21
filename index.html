@@ -1,857 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI Search Lab</title>
-  <style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Search Lab</title>
+    <link rel="stylesheet" href="./src/shared/styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>AI Search Lab</h1>
+      <p>8-Puzzle Solver and Tic-Tac-Toe AI</p>
+    </header>
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    <nav class="tabs">
+      <button class="tab-button active" data-tab="module-a">
+        8-Puzzle Solver
+      </button>
 
-    body {
-      font-family: Arial, sans-serif;
-      background: #1a1a2e;
-      color: #eee;
-      min-height: 100vh;
-    }
+      <button class="tab-button" data-tab="module-b">Tic-Tac-Toe AI</button>
 
-    /* ── Header ── */
-    header {
-      background: #16213e;
-      padding: 15px 25px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      border-bottom: 2px solid #0f3460;
-    }
+      <button class="tab-button" data-tab="dashboard">
+        Performance Dashboard
+      </button>
+    </nav>
 
-    header h1 { font-size: 20px; color: #a78bfa; }
+    <main>
+      <section id="module-a" class="tab-panel active">
+        <h2>Module A: 8-Puzzle Solver</h2>
 
-    .tab-btn {
-      padding: 8px 18px;
-      border: 1px solid #444;
-      border-radius: 6px;
-      background: transparent;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .tab-btn:hover  { border-color: #a78bfa; color: #fff; }
-    .tab-btn.active { background: #a78bfa; border-color: #a78bfa; color: #fff; font-weight: bold; }
-
-    /* ── Modules ── */
-    main    { padding: 30px; max-width: 1000px; margin: 0 auto; }
-    .module { display: block; }
-    .hidden { display: none; }
-
-    .module-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
-    .module-desc  { color: #888; font-size: 14px; margin-bottom: 25px; }
-
-    /* ── Module A layout ── */
-    .page-layout {
-      display: flex;
-      gap: 25px;
-      align-items: flex-start;
-    }
-
-    /* ── Puzzle board ── */
-    #puzzle-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows:    repeat(3, 100px);
-      gap: 6px;
-    }
-
-    .tile {
-      width: 100px;
-      height: 100px;
-      background: #0f3460;
-      border: 2px solid #1a4a8a;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: bold;
-      color: #eee;
-      cursor: pointer;
-    }
-    .tile.blank     { background: #111; border-color: #222; cursor: default; }
-    .tile.just-moved { background: #5b21b6; border-color: #a78bfa; }
-    .tile:hover:not(.blank) { background: #1a5090; }
-
-    /* ── Right panel ── */
-    .right-panel { display: flex; flex-direction: column; gap: 18px; flex: 1; }
-
-    .card {
-      background: #16213e;
-      border: 1px solid #0f3460;
-      border-radius: 10px;
-      padding: 16px 20px;
-    }
-
-    .card-title {
-      font-size: 11px;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #666;
-      margin-bottom: 12px;
-    }
-
-    /* ── Algorithm buttons ── */
-    .algo-row { display: flex; gap: 8px; }
-
-    .algo-btn {
-      padding: 7px 16px;
-      border: 1px solid #444;
-      border-radius: 6px;
-      background: transparent;
-      color: #aaa;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .algo-btn:hover  { border-color: #a78bfa; color: #eee; }
-    .algo-btn.active { background: #2d1b69; border-color: #7c3aed; color: #c4b5fd; font-weight: bold; }
-
-    /* ── Control buttons ── */
-    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; }
-    .btn-purple { background: #7c3aed; color: #fff; }
-    .btn-purple:hover { background: #6d28d9; }
-    .btn-gray   { background: #1e2235; color: #aaa; border: 1px solid #333; }
-    .btn-gray:hover { border-color: #a78bfa; color: #eee; }
-    .btn-red    { background: #1e2235; color: #f87171; border: 1px solid #333; }
-    .btn-red:hover { border-color: #f87171; }
-
-    /* ── Speed slider ── */
-    .speed-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-    .speed-row label { font-size: 12px; color: #666; white-space: nowrap; }
-    input[type="range"] { flex: 1; accent-color: #a78bfa; }
-
-    /* ── Dashboard ── */
-    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-    .dash-box   { background: #0f1117; border-radius: 8px; padding: 10px 14px; }
-    .dash-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-    .dash-value { font-size: 22px; font-weight: bold; color: #a78bfa; margin-top: 3px; }
-
-    /* ── Status bar ── */
-    #status-bar {
-      margin-top: 15px;
-      padding: 10px 14px;
-      background: #0f1117;
-      border: 1px solid #1e2235;
-      border-radius: 6px;
-      font-size: 13px;
-      color: #999;
-      min-height: 38px;
-    }
-
-    /* ── Module B (Tic Tac Toe) ── */
-    #ticTacToeRoot {
-      --bg: #0f1117;
-      --panel: #16213e;
-      --line: #0f3460;
-      --accent: #a78bfa;
-      --x: #a78bfa;
-      --o: #f87171;
-      --text: #eee;
-      --muted: #888;
-      --win: #34d399;
-      color: var(--text);
-    }
-
-    #ticTacToeRoot .ttt { max-width: 520px; }
-
-    #ticTacToeRoot .ttt-controls,
-    #ticTacToeRoot .ttt-metrics,
-    #ticTacToeRoot .ttt-benchmark {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-
-    #ticTacToeRoot .ttt-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
-
-    #ticTacToeRoot .ttt-tab {
-      flex: 1;
-      padding: 8px;
-      background: transparent;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    #ticTacToeRoot .ttt-tab.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    #ticTacToeRoot .ttt-panel { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
-    #ticTacToeRoot .ttt-panel.is-hidden { display: none; }
-
-    #ticTacToeRoot label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: var(--muted); }
-
-    #ticTacToeRoot select,
-    #ticTacToeRoot button {
-      font-size: 0.9rem;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: var(--bg);
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    #ticTacToeRoot button { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-    #ticTacToeRoot button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    #ticTacToeRoot .ttt-status { text-align: center; padding: 10px; margin-bottom: 16px; font-weight: 600; min-height: 1.2em; }
-
-    #ticTacToeRoot .ttt-board {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    #ticTacToeRoot .ttt-cell {
-      aspect-ratio: 1;
-      font-size: 2.6rem;
-      font-weight: 700;
-      background: var(--bg);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text);
-    }
-
-    #ticTacToeRoot .ttt-cell[data-player="X"] { color: var(--x); }
-    #ticTacToeRoot .ttt-cell[data-player="O"] { color: var(--o); }
-    #ticTacToeRoot .ttt-cell.is-win  { border-color: var(--win); box-shadow: 0 0 0 2px var(--win) inset; }
-    #ticTacToeRoot .ttt-cell.is-last { border-color: var(--accent); }
-
-    #ticTacToeRoot .ttt-metrics table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    #ticTacToeRoot .ttt-metrics td { padding: 6px 4px; border-bottom: 1px solid var(--line); }
-    #ticTacToeRoot .ttt-metrics td:first-child { color: var(--muted); }
-    #ticTacToeRoot .ttt-metrics td:last-child   { text-align: right; }
-
-    #ticTacToeRoot h3 { font-size: 1rem; margin: 0 0 10px; }
-
-    #ticTacToeRoot pre {
-      background: var(--bg);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      font-size: 0.8rem;
-      white-space: pre-wrap;
-      margin: 10px 0 0;
-      color: #aaa;
-    }
-
-  </style>
-</head>
-<body>
-
-  <!-- ── HEADER / NAV ── -->
-  <header>
-    <h1>🧠 AI Search Lab</h1>
-    <button class="tab-btn active" id="tab-a" onclick="switchModule('a')">Module A — 8-Puzzle</button>
-    <button class="tab-btn"        id="tab-b" onclick="switchModule('b')">Module B — Tic-Tac-Toe</button>
-  </header>
-
-  <main>
-
-    <!-- ══════════════════════════════════════
-         MODULE A — 8-Puzzle Solver
-    ══════════════════════════════════════ -->
-    <section id="module-a" class="module">
-
-      <p class="module-title">8-Puzzle Solver</p>
-      <p class="module-desc">Pick an algorithm, hit Solve, then step through the solution one move at a time.</p>
-
-      <div class="page-layout">
-
-        <!-- Left: the board -->
-        <div>
-          <div id="puzzle-grid"></div>
-          <div id="status-bar">Ready. Shuffle the puzzle or click Solve.</div>
-        </div>
-
-        <!-- Right: controls and dashboard -->
-        <div class="right-panel">
-
+        <div class="layout-grid">
           <div class="card">
-            <div class="card-title">Algorithm</div>
-            <div class="algo-row">
-              <button class="algo-btn active" onclick="pickAlgorithm('bfs', this)">BFS</button>
-              <button class="algo-btn"        onclick="pickAlgorithm('dijkstra', this)">Dijkstra</button>
-              <button class="algo-btn"        onclick="pickAlgorithm('astar', this)">A*</button>
+            <h3>Puzzle Setup</h3>
+
+            <label for="imageUpload">Upload Puzzle Image (.jpg/.png)</label>
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/png, image/jpeg"
+            />
+
+            <div class="button-row">
+              <button id="defaultPuzzleBtn">Use Default Numbered Puzzle</button>
+              <button id="shuffleBtn">Shuffle</button>
+            </div>
+
+            <label for="algorithmSelect">Algorithm</label>
+            <select id="algorithmSelect">
+              <option value="bfs">BFS</option>
+              <option value="dijkstra">Dijkstra</option>
+              <option value="astar">A*</option>
+            </select>
+
+            <div class="button-row">
+              <button id="solveBtn">Solve</button>
+              <button id="stepBtn">Next Step</button>
+              <button id="autoPlayBtn">Auto Play</button>
+              <button id="resetBtn">Reset</button>
             </div>
           </div>
 
           <div class="card">
-            <div class="card-title">Controls</div>
-            <div class="btn-row">
-              <button class="btn btn-purple" onclick="clickSolve()">⚡ Solve</button>
-              <button class="btn btn-gray"   onclick="clickStep()">→ Step</button>
-              <button class="btn btn-gray"   id="play-btn" onclick="clickPlayPause()">▶ Play</button>
-              <button class="btn btn-gray"   onclick="clickShuffle()">🔀 Shuffle</button>
-              <button class="btn btn-red"    onclick="clickReset()">↺ Reset</button>
-            </div>
-            <div class="speed-row">
-              <label>Slow</label>
-              <input type="range" id="speed-slider" min="1" max="5" value="3">
-              <label>Fast</label>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">Performance Dashboard</div>
-            <div class="dash-grid">
-              <div class="dash-box">
-                <div class="dash-label">Algorithm</div>
-                <div class="dash-value" id="dash-algo">—</div>
-              </div>
-              <div class="dash-box">
-                <div class="dash-label">Nodes Explored</div>
-                <div class="dash-value" id="dash-nodes">—</div>
-              </div>
-              <div class="dash-box">
-                <div class="dash-label">Moves in Solution</div>
-                <div class="dash-value" id="dash-moves">—</div>
-              </div>
-              <div class="dash-box">
-                <div class="dash-label">Time Taken</div>
-                <div class="dash-value" id="dash-time">—</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════════════
-         MODULE B — Tic-Tac-Toe with AI
-    ══════════════════════════════════════ -->
-    <section id="module-b" class="module hidden">
-      <p class="module-title">Tic-Tac-Toe with AI</p>
-      <p class="module-desc">Play against Minimax or Alpha-Beta, or watch two AIs compete.</p>
-      <div id="ticTacToeRoot"></div>
-    </section>
-
-  </main>
-
-
-  <!-- ══════════════════════════════════════
-       SCRIPTS
-       Order matters: puzzle first, then solvers, then game logic, then UI
-  ══════════════════════════════════════ -->
-  <script src="puzzle.js"></script>
-  <script src="solvers.js"></script>
-  <script src="game-logic.js"></script>
-
-  <script>
-
-    // ─────────────────────────────────────────────
-    // MODULE SWITCHING
-    // ─────────────────────────────────────────────
-    function switchModule(id) {
-      document.getElementById('module-a').classList.add('hidden');
-      document.getElementById('module-b').classList.add('hidden');
-      document.getElementById('module-' + id).classList.remove('hidden');
-
-      document.getElementById('tab-a').classList.remove('active');
-      document.getElementById('tab-b').classList.remove('active');
-      document.getElementById('tab-' + id).classList.add('active');
-
-      // Build Module B the first time the user switches to it
-      if (id === 'b' && !tttInitialized) {
-        initTicTacToe();
-        tttInitialized = true;
-      }
-    }
-
-    // ─────────────────────────────────────────────
-    // MODULE A - UI STATE
-    // ─────────────────────────────────────────────
-    selected_Algorithm = 'bfs';
-    solution_Path      = [];
-    step_Index         = 0;
-    is_Playing         = false;
-    play_Timer         = null;
-
-
-    // ─────────────────────────────────────────────
-    // drawBoard
-    // Reads the current_State array and draws 9 tiles
-    // highlightRow/Col = the tile that just moved (goes purple)
-    // ─────────────────────────────────────────────
-    function drawBoard(state, highlightRow, highlightCol) {
-      grid = document.getElementById('puzzle-grid');
-      grid.innerHTML = '';
-
-      for (row = 0; row < 3; row++) {
-        for (col = 0; col < 3; col++) {
-          value = state[row][col];
-          tile  = document.createElement('div');
-          tile.className = 'tile';
-
-          if (value === 0) {
-            tile.classList.add('blank');
-          } else {
-            tile.textContent = value;
-
-            if (row === highlightRow && col === highlightCol) {
-              tile.classList.add('just-moved');
-            }
-
-            // Closure locks in this tile's row and col
-            tile.onclick = (function(r, c) {
-              return function() { clickTile(r, c); };
-            })(row, col);
-          }
-
-          grid.appendChild(tile);
-        }
-      }
-    }
-
-
-    // ─────────────────────────────────────────────
-    // clickTile - manual play
-    // Check if the clicked tile is next to the blank
-    // If yes, slide it
-    // ─────────────────────────────────────────────
-    function clickTile(row, col) {
-      if (is_Playing) return;
-
-      blank     = findBlankSlot(current_State);
-      blank_Row = blank[0];
-      blank_Col = blank[1];
-
-      row_Diff = Math.abs(row - blank_Row);
-      col_Diff = Math.abs(col - blank_Col);
-
-      is_Adjacent = (row_Diff === 1 && col_Diff === 0) ||
-                    (row_Diff === 0 && col_Diff === 1);
-
-      if (is_Adjacent) {
-        current_State = swapTiles(current_State, row, col);
-        drawBoard(current_State, blank_Row, blank_Col);
-        setStatus(checkIfGoalReached(current_State) ? '🎉 You solved it!' : 'Manual move. Keep going!');
-      }
-    }
-
-
-    // ─────────────────────────────────────────────
-    // pickAlgorithm - updates the selected algorithm
-    // ─────────────────────────────────────────────
-    function pickAlgorithm(algo, btn) {
-      selected_Algorithm = algo;
-
-      document.querySelectorAll('.algo-btn').forEach(function(b) {
-        b.classList.remove('active');
-      });
-      btn.classList.add('active');
-
-      solution_Path = [];
-      step_Index    = 0;
-      stopPlaying();
-      setStatus('Algorithm set to ' + algo.toUpperCase() + '. Click Solve.');
-    }
-
-
-    // ─────────────────────────────────────────────
-    // clickSolve - runs the chosen algorithm
-    // stores full solution in solution_Path[]
-    // ─────────────────────────────────────────────
-    function clickSolve() {
-      stopPlaying();
-      step_Index = 0;
-      setStatus('Solving...');
-
-      setTimeout(function() {
-        result = null;
-
-        if      (selected_Algorithm === 'bfs')      result = solveBFS(current_State);
-        else if (selected_Algorithm === 'dijkstra') result = solveDijkstra(current_State);
-        else if (selected_Algorithm === 'astar')    result = solveAStar(current_State);
-
-        if (result === null) {
-          setStatus('No solution found.');
-          return;
-        }
-
-        solution_Path = result.path;
-
-        document.getElementById('dash-algo').textContent  = selected_Algorithm.toUpperCase();
-        document.getElementById('dash-nodes').textContent = result.nodesExplored.toLocaleString();
-        document.getElementById('dash-moves').textContent = result.path.length - 1;
-        document.getElementById('dash-time').textContent  = result.timeMs.toFixed(2) + ' ms';
-
-        setStatus('Solution found! ' + (result.path.length - 1) + ' moves. Click Step or Play.');
-      }, 30);
-    }
-
-
-    // ─────────────────────────────────────────────
-    // clickStep - advances one move
-    // ─────────────────────────────────────────────
-    function clickStep() {
-      if (solution_Path.length === 0) { setStatus('Click Solve first!'); return; }
-      if (step_Index >= solution_Path.length - 1) { setStatus('Already at the end.'); return; }
-
-      prev_State = solution_Path[step_Index];
-      blank_Pos  = findBlankSlot(prev_State);
-
-      step_Index++;
-      current_State = solution_Path[step_Index];
-
-      drawBoard(current_State, blank_Pos[0], blank_Pos[1]);
-      setStatus('Step ' + step_Index + ' of ' + (solution_Path.length - 1));
-
-      if (checkIfGoalReached(current_State)) {
-        setStatus('🎉 Solved!');
-        stopPlaying();
-      }
-    }
-
-
-    // ─────────────────────────────────────────────
-    // clickPlayPause - auto steps through solution
-    // ─────────────────────────────────────────────
-    function clickPlayPause() {
-      if (is_Playing) {
-        stopPlaying();
-        setStatus('Paused.');
-      } else {
-        if (solution_Path.length === 0) { setStatus('Click Solve first!'); return; }
-
-        is_Playing = true;
-        document.getElementById('play-btn').textContent = '⏸ Pause';
-
-        play_Timer = setInterval(function() {
-          if (step_Index >= solution_Path.length - 1) {
-            stopPlaying();
-            setStatus('🎉 Solved!');
-            return;
-          }
-          clickStep();
-        }, getSpeedDelay());
-      }
-    }
-
-    function stopPlaying() {
-      is_Playing = false;
-      clearInterval(play_Timer);
-      document.getElementById('play-btn').textContent = '▶ Play';
-    }
-
-    function getSpeedDelay() {
-      slider_Value = document.getElementById('speed-slider').value;
-      return 800 - (slider_Value * 150);
-    }
-
-
-    // ─────────────────────────────────────────────
-    // clickShuffle and clickReset
-    // ─────────────────────────────────────────────
-    function clickShuffle() {
-      stopPlaying();
-      solution_Path = [];
-      step_Index    = 0;
-      current_State = shuffleState();
-      drawBoard(current_State);
-      clearDashboard();
-      setStatus('Shuffled! Pick an algorithm and click Solve.');
-    }
-
-    function clickReset() {
-      stopPlaying();
-      solution_Path = [];
-      step_Index    = 0;
-      current_State = [[8,1,3],[4,0,2],[7,6,5]];
-      drawBoard(current_State);
-      clearDashboard();
-      setStatus('Reset to the assignment test puzzle.');
-    }
-
-    function setStatus(msg) {
-      document.getElementById('status-bar').textContent = msg;
-    }
-
-    function clearDashboard() {
-      document.getElementById('dash-algo').textContent  = '—';
-      document.getElementById('dash-nodes').textContent = '—';
-      document.getElementById('dash-moves').textContent = '—';
-      document.getElementById('dash-time').textContent  = '—';
-    }
-
-
-    // ─────────────────────────────────────────────
-    // MODULE B - TIC TAC TOE UI
-    // Built inline so we dont need ES module imports
-    // ─────────────────────────────────────────────
-    tttInitialized = false;
-    tttState = {};
-
-    function initTicTacToe() {
-      root = document.getElementById('ticTacToeRoot');
-
-      root.innerHTML = `
-        <div class="ttt">
-          <div class="ttt-controls">
-            <div class="ttt-tabs">
-              <button class="ttt-tab is-active" onclick="tttSelectMode('human', this)">Human vs AI</button>
-              <button class="ttt-tab"           onclick="tttSelectMode('ai', this)">AI vs AI</button>
-            </div>
-
-            <div class="ttt-panel" id="ttt-panel-human">
-              <label>Algorithm
-                <select id="ttt-human-algo">
-                  <option value="minimax">Minimax</option>
-                  <option value="alphabeta">Alpha-Beta</option>
-                </select>
-              </label>
-              <label>You play
-                <select id="ttt-human-order">
-                  <option value="first">First (X)</option>
-                  <option value="second">Second (O)</option>
-                </select>
-              </label>
-              <button onclick="tttStartHuman()">New Game</button>
-            </div>
-
-            <div class="ttt-panel is-hidden" id="ttt-panel-ai">
-              <label>X uses
-                <select id="ttt-ai-x">
-                  <option value="minimax">Minimax</option>
-                  <option value="alphabeta">Alpha-Beta</option>
-                </select>
-              </label>
-              <label>O uses
-                <select id="ttt-ai-o">
-                  <option value="alphabeta">Alpha-Beta</option>
-                  <option value="minimax">Minimax</option>
-                </select>
-              </label>
-              <button onclick="tttStartAI()">Auto-Play</button>
-            </div>
-          </div>
-
-          <div class="ttt-status" id="ttt-status">Pick a mode and start a game.</div>
-
-          <div class="ttt-board" id="ttt-board"></div>
-
-          <div class="ttt-metrics">
-            <h3>Last AI Decision</h3>
-            <table><tbody>
-              <tr><td>Algorithm</td>         <td id="ttt-m-algo">—</td></tr>
-              <tr><td>Move (cell)</td>       <td id="ttt-m-move">—</td></tr>
-              <tr><td>Decision time</td>     <td id="ttt-m-time">—</td></tr>
-              <tr><td>Nodes explored</td>    <td id="ttt-m-nodes">—</td></tr>
-              <tr><td>Pruning efficiency</td><td id="ttt-m-pruning">—</td></tr>
-            </tbody></table>
-          </div>
-
-          <div class="ttt-benchmark">
-            <h3>Standardized Position</h3>
-            <p>Empty board, AI first as X — for your report numbers.</p>
-            <button onclick="tttRunBenchmark()" style="margin-top:10px">Run Minimax vs Alpha-Beta</button>
-            <pre id="ttt-benchmark">—</pre>
+            <h3>8-Puzzle Board</h3>
+            <div id="puzzleBoard" class="puzzle-board"></div>
+            <p id="puzzleStatus" class="status-text">Ready.</p>
           </div>
         </div>
-      `;
+      </section>
 
-      tttBuildBoard();
+      <section id="module-b" class="tab-panel">
+        <h2>Module B: Tic-Tac-Toe AI</h2>
 
-      tttState = {
-        mode:        'human',
-        board:       emptyBoard(),
-        aiPlayer:    'O',
-        humanPlayer: 'X',
-        algorithm:   'minimax',
-        algorithms:  { X: 'minimax', O: 'alphabeta' },
-        current:     'X',
-        lastMove:    -1,
-        over:        true,
-        busy:        false,
-      };
-    }
+        <div class="card">
+          <p>Use this section to play Human vs AI or watch AI vs AI.</p>
+          <div id="ticTacToeRoot"></div>
+        </div>
+      </section>
 
-    // Build the 9 cell buttons
-    function tttBuildBoard() {
-      boardEl = document.getElementById('ttt-board');
-      boardEl.innerHTML = '';
-      for (ci = 0; ci < 9; ci++) {
-        cell = document.createElement('button');
-        cell.className        = 'ttt-cell';
-        cell.dataset.index    = ci;
-        cell.addEventListener('click', tttOnCellClick);
-        boardEl.appendChild(cell);
-      }
-    }
+      <section id="dashboard" class="tab-panel">
+        <h2>Unified Performance Dashboard</h2>
 
-    // Redraw all 9 cells from tttState.board
-    function tttRender(lastMove, winLine) {
-      cells = document.querySelectorAll('.ttt-cell');
-      cells.forEach(function(cell, i) {
-        player = tttState.board[i];
-        cell.textContent       = player;
-        cell.dataset.player    = player;
-        cell.classList.toggle('is-last', i === lastMove);
-        cell.classList.toggle('is-win',  !!winLine && winLine.includes(i));
-      });
-    }
+        <div class="dashboard-grid">
+          <div class="metric-card">
+            <span>Decision Time</span>
+            <strong id="metricDecisionTime">0 ms</strong>
+          </div>
 
-    function tttSetStatus(msg) {
-      document.getElementById('ttt-status').textContent = msg;
-    }
+          <div class="metric-card">
+            <span>Nodes Explored</span>
+            <strong id="metricNodesExplored">0</strong>
+          </div>
 
-    function tttReportDecision(result, algorithm) {
-      algoLabel = algorithm === 'alphabeta' ? 'Alpha-Beta' : 'Minimax';
-      document.getElementById('ttt-m-algo').textContent    = algoLabel;
-      document.getElementById('ttt-m-move').textContent    = result.bestMove;
-      document.getElementById('ttt-m-time').textContent    = result.decisionTimeMs.toFixed(2) + ' ms';
-      document.getElementById('ttt-m-nodes').textContent   = result.nodesExplored.toLocaleString();
-      document.getElementById('ttt-m-pruning').textContent = result.pruningEfficiency;
-    }
+          <div class="metric-card">
+            <span>Solution Length</span>
+            <strong id="metricSolutionLength">0</strong>
+          </div>
 
-    function tttSelectMode(mode, btn) {
-      tttState.mode = mode;
-      tttState.over = true;
+          <div class="metric-card">
+            <span>Pruning Efficiency</span>
+            <strong id="metricPruningEfficiency">N/A</strong>
+          </div>
+        </div>
 
-      document.querySelectorAll('.ttt-tab').forEach(function(t) { t.classList.remove('is-active'); });
-      btn.classList.add('is-active');
+        <div class="card">
+          <h3>Latest Run Summary</h3>
+          <pre id="runSummary">No algorithm has been run yet.</pre>
+        </div>
+      </section>
+    </main>
 
-      document.getElementById('ttt-panel-human').classList.toggle('is-hidden', mode !== 'human');
-      document.getElementById('ttt-panel-ai').classList.toggle('is-hidden',    mode !== 'ai');
-
-      tttState.board = emptyBoard();
-      tttRender(-1, null);
-      tttSetStatus(mode === 'human' ? 'Start a Human vs AI game.' : 'Start an AI vs AI game.');
-    }
-
-    function tttStartHuman() {
-      tttState.mode        = 'human';
-      tttState.board       = emptyBoard();
-      tttState.humanPlayer = document.getElementById('ttt-human-order').value === 'first' ? 'X' : 'O';
-      tttState.aiPlayer    = opponentOf(tttState.humanPlayer);
-      tttState.algorithm   = document.getElementById('ttt-human-algo').value;
-      tttState.current     = 'X';
-      tttState.over        = false;
-      tttState.lastMove    = -1;
-      tttRender(-1, null);
-      tttSetStatus('Your move (' + tttState.humanPlayer + ').');
-      if (tttState.aiPlayer === 'X') tttAdvanceHuman();
-    }
-
-    function tttAdvanceHuman() {
-      if (isTerminal(tttState.board)) { tttFinish(); return; }
-      if (tttState.current === tttState.aiPlayer) {
-        tttAITurn(tttState.aiPlayer, tttState.algorithm, function() {
-          tttState.current = tttState.humanPlayer;
-          if (isTerminal(tttState.board)) {
-            tttFinish();
-          } else {
-            tttSetStatus('Your move (' + tttState.humanPlayer + ').');
-          }
-        });
-      } else {
-        tttSetStatus('Your move (' + tttState.humanPlayer + ').');
-      }
-    }
-
-    function tttOnCellClick(event) {
-      if (tttState.mode !== 'human' || tttState.over || tttState.busy) return;
-      if (tttState.current !== tttState.humanPlayer) return;
-
-      index = Number(event.currentTarget.dataset.index);
-      if (tttState.board[index] !== '') return;
-
-      tttState.board    = makeMove(tttState.board, index, tttState.humanPlayer);
-      tttState.lastMove = index;
-      tttRender(index, null);
-      tttState.current  = tttState.aiPlayer;
-      tttAdvanceHuman();
-    }
-
-    function tttStartAI() {
-      tttState.mode       = 'ai';
-      tttState.board      = emptyBoard();
-      tttState.current    = 'X';
-      tttState.over       = false;
-      tttState.lastMove   = -1;
-      tttState.algorithms = {
-        X: document.getElementById('ttt-ai-x').value,
-        O: document.getElementById('ttt-ai-o').value,
-      };
-      tttRender(-1, null);
-      tttStepAI();
-    }
-
-    function tttStepAI() {
-      if (isTerminal(tttState.board)) { tttFinish(); return; }
-      player = tttState.current;
-      tttAITurn(player, tttState.algorithms[player], function() {
-        tttState.current = opponentOf(player);
-        tttStepAI();
-      });
-    }
-
-    function tttAITurn(player, algorithm, onDone) {
-      tttState.busy = true;
-      algoLabel = algorithm === 'alphabeta' ? 'Alpha-Beta' : 'Minimax';
-      tttSetStatus(algoLabel + ' (' + player + ') is thinking…');
-
-      setTimeout(function() {
-        result            = findBestMove(tttState.board, algorithm, player);
-        tttState.board    = makeMove(tttState.board, result.bestMove, player);
-        tttState.lastMove = result.bestMove;
-        tttReportDecision(result, algorithm);
-        tttRender(tttState.lastMove, null);
-        tttState.busy = false;
-        onDone();
-      }, 500);
-    }
-
-    function tttFinish() {
-      tttState.over = true;
-      winLine = winningLine(tttState.board, 'X') || winningLine(tttState.board, 'O');
-      tttRender(tttState.lastMove, winLine);
-      msg = isWinner(tttState.board, 'X') ? 'X wins!'
-          : isWinner(tttState.board, 'O') ? 'O wins!'
-          : "It's a draw.";
-      tttSetStatus(msg);
-    }
-
-    function tttRunBenchmark() {
-      result = compareAlgorithms(emptyBoard(), 'X');
-      document.getElementById('ttt-benchmark').textContent = [
-        'Empty board, AI first as X',
-        '',
-        'Minimax    move=' + result.minimax.bestMove   + '  nodes=' + result.minimax.nodesExplored.toLocaleString(),
-        'Alpha-Beta move=' + result.alphabeta.bestMove + '  nodes=' + result.alphabeta.nodesExplored.toLocaleString(),
-        '',
-        'Same move chosen?  ' + (result.agree ? 'YES' : 'NO'),
-        'Pruning rate:      ' + result.percentPruned.toFixed(1) + '% fewer nodes',
-      ].join('\n');
-    }
-
-
-    // ─────────────────────────────────────────────
-    // STARTUP - draw Module A board on page load
-    // ─────────────────────────────────────────────
-    drawBoard(current_State);
-
-  </script>
-
-</body>
+    <script src="./src/module_a/puzzle.js"></script>
+    <script src="./src/module_a/solvers.js"></script>
+    <script type="module" src="./src/shared/app.js"></script>
+  </body>
 </html>
