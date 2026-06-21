@@ -38,8 +38,8 @@ function findBlankSlot(state){
 //trying to loop through the starting state and locate where 0 is 
 // will return col and row so we can then use it in the find legal moves function
 //we first set the range for the loop 3 x 3 , we go through first array, if not found we move to the next array
-    for(row = 0; row < 3; row ++){
-        for(col = 0; col < 3; col++){
+    for(let row = 0; row < 3; row ++){
+        for(let col = 0; col < 3; col++){
             if(state[row][col] === 0){
                 return [row,col];
             }
@@ -53,11 +53,11 @@ function identifyLegalMoves(state){
 // Approach to this is to use somthing similar  to what we caw in the lecture (row,col)
 // there are 4 edges per node / vertex, we will try up, down, left , and right (this requires either adding 1 or subtracting 1)
 //if the result of the addition / subtraction is no in the legal range of (0,0) to (2,2), we can assume its an illegal move if the code ran right lol
-    zeroLocation = findBlankSlot(state);
-    [row,col] = zeroLocation;
+    let zeroLocation = findBlankSlot(state);
+    let [row,col] = zeroLocation;
 
     // list of moves
-    directions = [
+    let directions = [
         [-1,0], // up move
         [1,0], // down move
         [0,-1], // left move
@@ -65,15 +65,15 @@ function identifyLegalMoves(state){
     ];
     
     // sotrinng these moves after checking 
-    legalMoves=[];
+    let legalMoves=[];
 
-    for(i = 0; i < 4; i++){
+    for(let i = 0; i < 4; i++){
         //this is to acces the 2d aray and find the change
-        rowChange = directions[i][0];
-        colChange = directions[i][1];
+        let rowChange = directions[i][0];
+        let colChange = directions[i][1];
         // add the change
-        newRow = row + rowChange;
-        newCol = col + colChange;
+        let newRow = row + rowChange;
+        let newCol = col + colChange;
 
         //validating check
         if (newRow >=0 && newRow <= 2 && newCol >= 0 && newCol <= 2){
@@ -87,18 +87,18 @@ function identifyLegalMoves(state){
 
 // making the actual change of tiles
 function swapTiles(currentState, newRow, newCol){
-    newState = [];
+    let newState = [];
 
-    [row,col] = findBlankSlot(currentState);
+    let [row,col] = findBlankSlot(currentState);
 
-    for(i = 0; i<3; i++){
+    for(let i = 0; i<3; i++){
         newState[i] = [];
-        for(j = 0; j<3; j++){
+        for(let j = 0; j<3; j++){
             newState[i][j] = currentState[i][j];
         }
     }
     //swapping using a temp
-    temp = newState[row][col];
+    let temp = newState[row][col];
     newState[row][col] = newState[newRow][newCol];
     newState[newRow][newCol] = temp;
 
@@ -107,8 +107,8 @@ function swapTiles(currentState, newRow, newCol){
 }
 // chekcign to see if we have found the goal
 function checkIfGoalReached(currentState){
-        for (row = 0; row < 3; row++) {
-            for (col = 0; col < 3; col++) {
+        for (let row = 0; row < 3; row++) {
+            for (let col = 0; col < 3; col++) {
                     // checking invidual tiels
                 if (currentState[row][col] !== goal_State[row][col]){
                     return false;  //stop immediately if one is w2orng 
@@ -122,8 +122,8 @@ function checkIfGoalReached(currentState){
 function boardToString(state){
 
     let result = ('');
-    for (row = 0; row <3; row++){
-        for(col = 0; col <3; col++){
+    for (let row = 0; row <3; row++){
+        for(let col = 0; col <3; col++){
             result = result + state[row][col] +',';
         }
     }
@@ -131,7 +131,7 @@ function boardToString(state){
 }
 // finding the path the algorithm takes to soltion
 function traceSolution(node){
-    path = [];
+    let path = [];
     while (node.parent !== null){
         path.unshift(node.state);
         node = node.parent;
@@ -145,17 +145,17 @@ console.log(findBlankSlot(goal_State));
 
 
 function isSolvable(state) {
-    flat = [];
-    for (row = 0; row < 3; row++) {
-        for (col = 0; col < 3; col++) {
+    let flat = [];
+    for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
             if (state[row][col] !== 0) {
                 flat.push(state[row][col]);
             }
         }
     }
-    inversions = 0;
-    for (i = 0; i < flat.length; i++) {
-        for (j = i + 1; j < flat.length; j++) {
+    let inversions = 0;
+    for (let i = 0; i < flat.length; i++) {
+        for (let j = i + 1; j < flat.length; j++) {
             if (flat[i] > flat[j]) inversions++;
         }
     }
@@ -166,9 +166,9 @@ function shuffleState() {
     tiles = [1,2,3,4,5,6,7,8,0];
     shuffled;
     do {
-        for (i = tiles.length - 1; i > 0; i--) {
-            j    = Math.floor(Math.random() * (i + 1));
-            temp = tiles[i];
+        for (let i = tiles.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            let temp = tiles[i];
             tiles[i] = tiles[j];
             tiles[j] = temp;
         }
@@ -181,22 +181,3 @@ function shuffleState() {
     return shuffled;
 }
 
-
-// GOT SOME TEST CASES THAT WE SHOULF BE ABLE TO PASS:
-
-// Test 1: boardToString works
-console.log(boardToString([[1,2,3],[4,5,6],[7,8,0]])); // "1,2,3,4,5,6,7,8,0,"
-
-// Test 2: goal is already reached
-console.log(checkIfGoalReached([[1,2,3],[4,5,6],[7,8,0]])); // true
-console.log(checkIfGoalReached([[3,1,2],[0,4,6],[8,7,5]])); // false
-
-// Test 3: BFS finds a solution
-let result = solveBFS([[1,2,3],[4,5,6],[7,0,8]]);
-console.log(result.path.length - 1); // should be 1 (one move from goal)
-
-// Test 4: the standardized test puzzle (for your report)
-let report = solveBFS([[8,1,3],[4,0,2],[7,6,5]]);
-console.log("BFS nodes:", report.nodesExplored);
-let reportA = solveAStar([[8,1,3],[4,0,2],[7,6,5]]);
-console.log("A* nodes:", reportA.nodesExplored);
