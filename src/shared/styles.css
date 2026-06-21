@@ -1,0 +1,184 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f7fb;
+  color: #172033;
+}
+
+.app-header {
+  background: #123c69;
+  color: white;
+  padding: 28px;
+  text-align: center;
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid #d8e0ec;
+}
+
+.tab-button {
+  border: none;
+  background: #e9f1fb;
+  color: #123c69;
+  padding: 12px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tab-button.active {
+  background: #123c69;
+  color: white;
+}
+
+main {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #d8e0ec;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(18, 60, 105, 0.08);
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+button,
+select,
+input {
+  font-size: 15px;
+}
+
+button {
+  border: none;
+  background: #1f6feb;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+select,
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 14px;
+  border: 1px solid #cad5e2;
+  border-radius: 8px;
+}
+
+.puzzle-board {
+  width: 330px;
+  height: 330px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 0 auto;
+}
+
+.tile {
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 12px;
+  background: #e9f1fb;
+  color: #123c69;
+  border: 2px solid #cad5e2;
+  background-size: cover;
+  background-position: center;
+}
+
+.empty-tile {
+  background: #172033;
+  color: transparent;
+}
+
+.status-text {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 16px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.metric-card {
+  background: white;
+  border: 1px solid #d8e0ec;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(18, 60, 105, 0.08);
+}
+
+.metric-card span {
+  display: block;
+  color: #5b6778;
+  margin-bottom: 8px;
+}
+
+.metric-card strong {
+  font-size: 28px;
+  color: #123c69;
+}
+
+pre {
+  background: #f4f7fb;
+  padding: 16px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+@media (max-width: 800px) {
+  .layout-grid,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .puzzle-board {
+    width: 270px;
+    height: 270px;
+  }
+}
