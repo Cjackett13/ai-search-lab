@@ -126,14 +126,14 @@ function solveDijkstra(startState) {
                     state:  newState,
                     parent: current,
                     cost:   current.cost + 1,  // incremnt for each move
-            });
+                });
+            }
         }
-    }
     }
 
     return null;
 }
-
+// astar 
 function solveAStar(startState) {
     startTime     = performance.now();
     nodesExplored = 0;

@@ -121,12 +121,13 @@ function checkIfGoalReached(currentState){
 // cahnge current board into a string so we can save to check if already cchecked  
 function boardToString(state){
 
-    result ='';
+    let result = ('');
     for (row = 0; row <3; row++){
         for(col = 0; col <3; col++){
             result = result + state[row][col] +',';
         }
     }
+    return result;
 }
 // finding the path the algorithm takes to soltion
 function traceSolution(node){
@@ -142,3 +143,60 @@ console.log(findBlankSlot(starting_State));
 console.log(findBlankSlot(goal_State));
 
 
+
+function isSolvable(state) {
+    flat = [];
+    for (row = 0; row < 3; row++) {
+        for (col = 0; col < 3; col++) {
+            if (state[row][col] !== 0) {
+                flat.push(state[row][col]);
+            }
+        }
+    }
+    inversions = 0;
+    for (i = 0; i < flat.length; i++) {
+        for (j = i + 1; j < flat.length; j++) {
+            if (flat[i] > flat[j]) inversions++;
+        }
+    }
+    return inversions % 2 === 0;
+}
+
+function shuffleState() {
+    tiles = [1,2,3,4,5,6,7,8,0];
+    shuffled;
+    do {
+        for (i = tiles.length - 1; i > 0; i--) {
+            j    = Math.floor(Math.random() * (i + 1));
+            temp = tiles[i];
+            tiles[i] = tiles[j];
+            tiles[j] = temp;
+        }
+        shuffled = [
+            [tiles[0], tiles[1], tiles[2]],
+            [tiles[3], tiles[4], tiles[5]],
+            [tiles[6], tiles[7], tiles[8]],
+        ];
+    } while (!isSolvable(shuffled));
+    return shuffled;
+}
+
+
+// GOT SOME TEST CASES THAT WE SHOULF BE ABLE TO PASS:
+
+// Test 1: boardToString works
+console.log(boardToString([[1,2,3],[4,5,6],[7,8,0]])); // "1,2,3,4,5,6,7,8,0,"
+
+// Test 2: goal is already reached
+console.log(checkIfGoalReached([[1,2,3],[4,5,6],[7,8,0]])); // true
+console.log(checkIfGoalReached([[3,1,2],[0,4,6],[8,7,5]])); // false
+
+// Test 3: BFS finds a solution
+let result = solveBFS([[1,2,3],[4,5,6],[7,0,8]]);
+console.log(result.path.length - 1); // should be 1 (one move from goal)
+
+// Test 4: the standardized test puzzle (for your report)
+let report = solveBFS([[8,1,3],[4,0,2],[7,6,5]]);
+console.log("BFS nodes:", report.nodesExplored);
+let reportA = solveAStar([[8,1,3],[4,0,2],[7,6,5]]);
+console.log("A* nodes:", reportA.nodesExplored);
