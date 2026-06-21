@@ -49,8 +49,6 @@ function findBlankSlot(state){
 
 
 
-
-
 function identifyLegalMoves(state){
 // Approach to this is to use somthing similar  to what we caw in the lecture (row,col)
 // there are 4 edges per node / vertex, we will try up, down, left , and right (this requires either adding 1 or subtracting 1)
@@ -119,6 +117,26 @@ function checkIfGoalReached(currentState){
         }
     }
     return true; // found all tiles are correct
+}
+// cahnge current board into a string so we can save to check if already cchecked  
+function boardToString(state){
+
+    result ='';
+    for (row = 0; row <3; row++){
+        for(col = 0; col <3; col++){
+            result = result + state[row][col] +',';
+        }
+    }
+}
+// finding the path the algorithm takes to soltion
+function traceSolution(node){
+    path = [];
+    while (node.parent !== null){
+        path.unshift(node.state);
+        node = node.parent;
+    }
+    path.unshift(node.state);
+    return path;
 }
 console.log(findBlankSlot(starting_State));
 console.log(findBlankSlot(goal_State));
