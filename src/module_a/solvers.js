@@ -1,86 +1,200 @@
-/* array = holding values
- 
-
-let fruits = ["apple", "orange", "banana"];
 
 
-console.log(fruits);
-console.log(fruits[0]);
-console.log(fruits[2]);
 
-fruits.push("coco");
-console.log(fruits);
+// mechanism of actualyl finding  solutions 
 
-fruits.pop();
-console.log(fruits);
+function manhattanDistance(state) {
 
-fruits.unshift("mango");
-console.log(fruits);
+    // Where each tile number SHOULD be in the goal state
+    const goalRow = { 1:0, 2:0, 3:0, 4:1, 5:1, 6:1, 7:2, 8:2, 0:2 };
+    const goalCol = { 1:0, 2:1, 3:2, 4:0, 5:1, 6:2, 7:0, 8:1, 0:2 };
 
-fruits.shift();
-console.log(fruits);
+    let total = 0;
 
-let numOfFruits = fruits.length;
-let index = fruits.indexOf("orange")
-let missingIndex = fruits.indexOf("Pear")
+    for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+            let tile = state[row][col];
 
-console.log(numOfFruits);
-console.log(index);
-console.log(missingIndex);
-*/
-
-let goal_State = ([[1,2,3],[4,5,6],[7,8,0]]);
-
-let starting_State = ([[3,1,2],[0,4,6],[8,7,5]]);
-
-
-function findBlankSlot(state){
-//trying to loop through the starting state and locate where 0 is 
-// will return col and row so we can then use it in the find legal moves function
-//we first set the range for the loop 3 x 3 , we go through first array, if not found we move to the next array
-    for(row = 0; row < 3; row ++){
-        for(col = 0; col < 3; col++){
-            if(state[row][col] === 0){
-                return [row,col];
+            if (tile !== 0) {
+                // How far is this tile from where it belongs?
+                let rowDistance = Math.abs(row - goalRow[tile]);
+                let colDistance = Math.abs(col - goalCol[tile]);
+                total = total + rowDistance + colDistance;
             }
         }
     }
+
+    return total;
 }
 
-function identifyLegalMoves(state){
-// Approach to this is to use somthing similar  to what we caw in the lecture (row,col)
-// there are 4 edges per node / vertex, we will try up, down, left , and right (this requires either adding 1 or subtracting 1)
-//if the result of the addition / subtraction is no in the legal range of (0,0) to (2,2), we can assume its an illegal move if the code ran right lol
-    zeroLocation = findBlankSlot(state);
+//B BFS 
+function solveBFS(startState) {
+    let startTime = performance.now(); // start timer 
+    let nodesExplored = 0;
 
-    // list of moves
-    directions = [
-        [-1,0], // up move
-        [1,0], // down move
-        [0,-1], // left move
-        [0,1] // right move
-    ];
-    
-    // sotrinng these moves after checking 
-    legalMoves=[];
+    //the node we came from (so we can trace back the path)
+    let queue = [];
+    queue.push({ state: startState, parent: null });
 
-    for(i = 0; i < 4; i++){
-        //this is to acces the 2d aray and find the change
-        rowChange = directions[i][0];
-        colChange = directions[i][1];
-        // add the change
-        newRow = row + rowChange;
-        newCol = col + colChange;
+    // visited to keepa track of states we already saw so we don't explore the same board twice
+    let visited = new Set();
+    visited.add(boardToString(startState));
 
-        //validating check
-        if (newRow >=0 && newRow <= 2 && newCol >= 0 && newCol <= 2){
-            legaMoves.push([newRow, newCol]) // add to list if we can validate its withinh the 3x3 bounds
+    while (queue.length > 0) {
+
+        // Take from the fornt of the queue (old state first)
+        let current = queue.shift();
+        nodesExplored++;
+
+        // check to see if wee hit the goal state 
+        if (checkIfGoalReached(current.state)) {
+            return {
+                path: traceSolution(current),
+                nodesExplored: nodesExplored,
+                timeMs: performance.now() - startTime,
+            };
         }
-    
+
+        // Find all legal moves 
+        let moves = identifyLegalMoves(current.state);
+
+        for (let i = 0; i < moves.length; i++) {
+            let newRow = moves[i][0];
+            let newCol = moves[i][1];
+            let newState = swapTiles(current.state, newRow, newCol);
+
+            let key = boardToString(newState);
+
+            // Only add it if we havent seen this board before
+            if (!visited.has(key)) {
+                visited.add(key);
+                queue.push({ state: newState, parent: current });
+            }
+        }
     }
+
+    return null; // no solution found
 }
 
-console.log(findBlank(starting_State));
-console.log(findBlank(goal_State));
 
+// dijkstra
+function solveDijkstra(startState) {
+    let startTime     = performance.now();
+    let nodesExplored = 0;
 
+    // storuing cost
+    let priorityQueue = [];
+    priorityQueue.push({ state: startState, parent: null, cost: 0 });
+
+    let visited = {};
+
+    while (priorityQueue.length > 0) {
+
+        // Sortso the cheapest node is first
+        priorityQueue.sort(function(a, b) {
+            return a.cost - b.cost;
+        });
+
+        let current = priorityQueue.shift();
+        let key = boardToString(current.state);
+
+        // Skip if we already processed this state
+        if (visited[key]) {
+            continue;
+        }
+
+        visited[key] = true;
+        nodesExplored++;
+
+        if (checkIfGoalReached(current.state)) {
+            return {
+                path:          traceSolution(current),
+                nodesExplored: nodesExplored,
+                timeMs:        performance.now() - startTime,
+            };
+        }
+
+        let moves = identifyLegalMoves(current.state);
+
+        for (let i = 0; i < moves.length; i++) {
+            let newRow = moves[i][0];
+            let newCol = moves[i][1];
+            let newState = swapTiles(current.state, newRow, newCol);
+
+            let newKey = boardToString(newState);
+
+            if (!visited[newKey]) {
+                priorityQueue.push({
+                    state:  newState,
+                    parent: current,
+                    cost:   current.cost + 1,  // incremnt for each move
+                });
+            }
+        }
+    }
+
+    return null;
+}
+// astar 
+function solveAStar(startState) {
+    let startTime = performance.now();
+    let nodesExplored = 0;
+
+    let priorityQueue = [];
+    priorityQueue.push({
+        state:  startState,
+        parent: null,
+        g: 0,                                 
+        f: manhattanDistance(startState),     
+    });
+
+    let visited = {};
+
+    while (priorityQueue.length > 0) {
+
+        // Always pick the node with the lowest f score
+        priorityQueue.sort(function(a, b) {
+            return a.f - b.f;
+        });
+
+        let current = priorityQueue.shift();
+        let key = boardToString(current.state);
+
+        if (visited[key]) {
+            continue;
+        }
+
+        visited[key] = true;
+        nodesExplored++;
+
+        if (checkIfGoalReached(current.state)) {
+            return {
+                path: traceSolution(current),
+                nodesExplored: nodesExplored,
+                timeMs: performance.now() - startTime,
+            };
+        }
+
+        let moves = identifyLegalMoves(current.state);
+
+        for (i = 0; i < moves.length; i++) {
+            let newRow = moves[i][0];
+            let newCol = moves[i][1];
+            let newState = swapTiles(current.state, newRow, newCol);
+            newKey = boardToString(newState);
+
+            if (!visited[newKey]) {
+                let g = current.g + 1;               // incremntign for move
+                let h = manhattanDistance(newState);  // checking the est of moves 
+                priorityQueue.push({
+                    state:  newState,
+                    parent: current,
+                    g:      g,
+                    f:      g + h,
+                });
+            }
+        }
+    }
+
+    return null;
+}
