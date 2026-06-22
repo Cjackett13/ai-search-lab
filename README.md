@@ -41,11 +41,7 @@ Open index.html in any  browser — no installation or setup required acts as Si
 
 ## Heuristic Justification
 
-<!-- 
-WHAT TO WRITE: 2-3 sentences explaining why Manhattan Distance never overestimates.
-You are NOT proving it makes things faster (the numbers do that). You are explaining
-why A* is still guaranteed to find the optimal solution when using this heuristic.
--->
+We used Manhatten Distance as out A* heuristic. Manhatten Distance is always counting best case scenario  / minimum number of moves for the tile to reach its goal. Since the tiles could block other tiles there is room for error so it would increase the number of moves required, but never decrease the number of moves. This shows that Manhatten Distance doesn't over estimate but in fact underestimate the number of steps which makes it admissible and allowing A* to always return the optimal solution 
 
 ## Comparative Analysis Report
 
