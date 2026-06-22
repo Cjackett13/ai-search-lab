@@ -4,9 +4,9 @@ AI Search Lab — 8-Puzzle Solver & Tic-Tac-Toe with AI
 
 
 
-### ai-search-lab is a app that demonstates two search categories:
+##### ai-search-lab is a app that demonstates two search categories:
 
-  single-agent search (Module A) & adversarial search (Module B)
+  - single-agent search (Module A) & adversarial search (Module B)
 
 Module A implements BFS, Dijkstra, and A* to solve the classic sliding-tile puzzle.
 Module B implements Minimax and Alpha-Beta Pruning for an unbeatable Tic-Tac-Toe AI.
