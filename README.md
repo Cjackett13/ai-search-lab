@@ -1,4 +1,3 @@
-<img width="744" height="522" alt="881b9b7d-6f79-4322-b296-e1f3bd72259e" src="https://github.com/user-attachments/assets/0a9242d0-e7e8-4dca-b0e5-c783c168b1a5" />
 AI Search Lab — 8-Puzzle Solver & Tic-Tac-Toe with AI
 
 ## Overview
