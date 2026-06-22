@@ -4,7 +4,7 @@ AI Search Lab — 8-Puzzle Solver & Tic-Tac-Toe with AI
 
 
 
-ai-search-lab is a app that demonstates two search categories:
+#ai-search-lab is a app that demonstates two search categories:
 
   single-agent search (Module A) & adversarial search (Module B)
 
@@ -22,11 +22,10 @@ Built by Julian Sanchez, Christie Jackett, and Myckheal Hosang for CAI4002 RVCC 
 
 
 ## How to Run
-<!-- 
+
 
 Open index.html in any  browser — no installation or setup required acts as Single entry point
 
--->
 
 ## Algorithms Implemented
 <!--
@@ -91,9 +90,9 @@ Test puzzle: [[8,1,3],[4,0,2],[7,6,5]] → goal [[1,2,3],[4,5,6],[7,8,0]]
 
 | Algorithm | Nodes Explored | Solution Length | Time (ms) |
 |-----------|---------------|-----------------|-----------|
-| BFS | 5,961 | 14 moves | [YOUR NUMBER] |
-| Dijkstra | 5,961 | 14 moves | [YOUR NUMBER] |
-| A* | 77 | 14 moves | [YOUR NUMBER] |
+| BFS | 5,961 | 14 moves | 23 |
+| Dijkstra | 5,961 | 14 moves | 203 |
+| A* | 77 | 14 moves | 2 |
 
 <!-- 
 INSIGHT TO ADD (2-3 sentences): Don't just restate the numbers. Say something about what
