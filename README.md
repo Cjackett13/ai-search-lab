@@ -28,16 +28,16 @@ Open index.html in any  browser — no installation or setup required acts as Si
 
 
 ## Algorithms Implemented
-<!--
-Module A - 8-Puzzle Solver
+
+#### Module A - 8-Puzzle Solver
 - BFS - Explores states level by level
 - Dijkstra - Cost-based priority search
 - A* - Informed search using Manhattan Distance
 
-Module B - Tic-Tac-Toe AI
+#### Module B - Tic-Tac-Toe AI
 - Minimax - Explores the full game tree to find the optimal move
 - Alpha-Beta Pruning - Minimax with branch pruning to skip provably irrelevant nodes
--->
+
 
 ## Heuristic Justification
 
