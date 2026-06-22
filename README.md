@@ -17,7 +17,7 @@ Julian - Module A
 Christie - Module B
 Myckheal - UI & Integration
 
-Built by Julian Sanchez (6474791), Christie Jackett, and Myckheal Hosang (6346913) for CAI4002 RVCC 1265 | Summer C.
+Built by Julian Sanchez (6474791), Christie Jackett (6413331), and Myckheal Hosang (6346913) for CAI4002 RVCC 1265 | Summer C.
 
 
 
