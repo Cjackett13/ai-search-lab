@@ -59,14 +59,7 @@ The A* search works well for the 8 puzzle because there is a clear goal state an
 
 But Minimax wouldnt any sense for the 8 puzzle because there is no opponent and the puzzle would only have one player making decisions meaning we would have nothing to minimize against. Samething with A* not being a good fit for Tic tac Tor because there is no real distance to measure in the way to win. The result would depend on what the opponent does which is why Minimax and Alpha Beta Pruning are the better choices.
 
-Prompt 3 - Empirical Comparison: Module A
-
-<!-- 
-WHAT TO WRITE: Report your actual numbers from the standardized test puzzle.
-Paste the table below and fill in the numbers. Then write 2-3 sentences of insight.
-
-Test puzzle: [[8,1,3],[4,0,2],[7,6,5]] → goal [[1,2,3],[4,5,6],[7,8,0]]
--->
+### Prompt 3 - Empirical Comparison: Module A
 
 | Algorithm | Nodes Explored | Solution Length | Time (ms) |
 |-----------|---------------|-----------------|-----------|
@@ -74,21 +67,22 @@ Test puzzle: [[8,1,3],[4,0,2],[7,6,5]] → goal [[1,2,3],[4,5,6],[7,8,0]]
 | Dijkstra | 5,961 | 14 moves | 203 |
 | A* | 77 | 14 moves | 2 |
 
-<!-- 
-INSIGHT TO ADD (2-3 sentences): Don't just restate the numbers. Say something about what
-they mean. Good observations to make:
-- BFS and Dijkstra explored the exact same number of nodes — this shows that Dijkstra 
-  adds no benefit over BFS when all move costs are equal (unit cost).
+
+- BFS and Dijkstra explored the exact same number of nodes which shows that Dijksta priority search doesnt really make a diffrence in this case since all moves cost the same.
+<img width="919" height="668" alt="image" src="https://github.com/user-attachments/assets/a61ab990-a434-4d78-b02b-bc8cc8dabf9d" />
+
+<img width="917" height="673" alt="image" src="https://github.com/user-attachments/assets/dfba63a9-e37b-4e4e-9959-e6413b667b0c" />
+
+
+What does this tell you about the value of heuristic information?
+  
 - A* explored 98.7% fewer nodes than BFS while still finding the exact same 14-move solution.
-  This shows that a good heuristic doesn't sacrifice optimality — it just avoids wasted exploration.
-- Something that surprised you? (e.g. you expected Dijkstra to do better than BFS)
+  This shows that the Manhatten Distance heuristic doesn't sacrifice results, and it just avoids wasted exploration.
+  <img width="919" height="668" alt="image" src="https://github.com/user-attachments/assets/14730b12-b8af-44c4-8338-8a6ab7ba25f2" />
 
-SCREENSHOT: Insert a screenshot of your performance dashboard showing these numbers here.
-The grader will not give credit for this section without screenshot evidence.
-[INSERT SCREENSHOT]
--->
+Something that surprised us was just how fast A* with heuristic really is. It beat out the other searched by a huge margin and it isnt the most complex thing to add.
 
-Prompt 4 - Empirical Comparison: Module B
+### Prompt 4 - Empirical Comparison: Module B
 
 <!-- 
 WHAT TO WRITE: Report Minimax vs Alpha-Beta node counts on empty board, AI first as X.
