@@ -45,22 +45,15 @@ We used Manhatten Distance as out A* heuristic. Manhatten Distance is always cou
 
 ## Comparative Analysis Report
 
-Prompt 1 - Structural Comparison
+### Prompt 1 - Structural Comparison
 
-<!-- 
-WHAT TO WRITE (~100 words): How is the 8-puzzle search space similar to and different 
-from the Tic-Tac-Toe game tree?
+The 8 puzzle and Tic tac Toe are similar because we can represent both as a search space where each state leads to another state by valid moves, and in both the algorithm explores different possibilities before deciding on the best action.
 
-Key points to hit:
-- Similar: both are state spaces where you move from one state to another by applying an action
-- Different: in the 8-puzzle, YOU control every move (single agent). In Tic-Tac-Toe, 
-  an OPPONENT controls alternating moves — you can't just plan a path, you have to 
-  plan responses to what they might do.
-- Different: "solving" the 8-puzzle means finding a path to a fixed goal. 
-  "Solving" Tic-Tac-Toe means finding a strategy that handles every possible opponent response.
--->
+The biggest difference is in the 8 puzzle game we use a single agent search meaning we control every move and are simply trying to find a path from the starting state to the goal state. 
 
-Prompt 2 - Algorithm Fit
+The Tic tac Toe game we use adversarial search  because we are activly playing against another player who is trying to stop us from winning. Instead of simply trying to finding one path to a goal we / the AI has to consider all possible opponent responses and choose a move that gives the best outcome no matter what the opponent may do.
+
+### Prompt 2 - Algorithm Fit
 
 <!-- 
 WHAT TO WRITE (~100 words): Why is A* good for the 8-puzzle but not Tic-Tac-Toe?
