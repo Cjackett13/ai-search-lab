@@ -1,3 +1,4 @@
+<img width="744" height="522" alt="881b9b7d-6f79-4322-b296-e1f3bd72259e" src="https://github.com/user-attachments/assets/0a9242d0-e7e8-4dca-b0e5-c783c168b1a5" />
 AI Search Lab — 8-Puzzle Solver & Tic-Tac-Toe with AI
 
 ## Overview
@@ -84,20 +85,17 @@ Something that surprised us was just how fast A* with heuristic really is. It be
 
 ### Prompt 4 - Empirical Comparison: Module B
 
-
-WHAT TO WRITE: Report Minimax vs Alpha-Beta node counts on empty board, AI first as X.
-
 | Algorithm | Nodes Explored |
 |-----------|---------------|
-| Minimax   | [NUMBER FROM PERSON 2] |
-| Alpha-Beta | [NUMBER FROM PERSON 2] |
+| Minimax   | 549,945 |
+| Alpha-Beta | 34,202 |
 
-Pruning rate: ([Minimax nodes] - [Alpha-Beta nodes]) / [Minimax nodes] × 100 = [X]%
+Pruning rate: ([549,945] - [34,202]) / [Minimax nodes] × 100 = [X]%
 
 INSIGHT: 1-2 sentences on what the pruning rate means in practice.
 
-SCREENSHOT: Insert screenshot of Module B benchmark output here.
-[INSERT SCREENSHOT]
+<img width="368" height="927" alt="image" src="https://github.com/user-attachments/assets/d897f726-3835-4ead-9b76-e83478d55f1f" />
+
 
 
 Prompt 5 - Trade-off Analysis
