@@ -55,18 +55,9 @@ The Tic tac Toe game we use adversarial search  because we are activly playing a
 
 ### Prompt 2 - Algorithm Fit
 
-<!-- 
-WHAT TO WRITE (~100 words): Why is A* good for the 8-puzzle but not Tic-Tac-Toe?
-Why doesn't Minimax apply to the 8-puzzle?
+The A* search works well for the 8 puzzle because there is a clear goal state and the Manhattan Distance gives an estimate of how far a state is from the goal allowing A* to focus on the most promising states first while still guaranteeing the optimal solution.
 
-Key points to hit:
-- A* needs a heuristic — a way to estimate distance to the goal. The 8-puzzle has a 
-  clear, measurable goal state so Manhattan Distance works perfectly. Tic-Tac-Toe has 
-  no fixed "distance to goal" — the outcome depends entirely on what the opponent does, 
-  so there's nothing meaningful to estimate.
-- Minimax needs two players taking turns. The 8-puzzle only has one player — there's 
-  no opponent, no minimizing player, nothing to minimax against.
--->
+But Minimax wouldnt any sense for the 8 puzzle because there is no opponent and the puzzle would only have one player making decisions meaning we would have nothing to minimize against. Samething with A* not being a good fit for Tic tac Tor because there is no real distance to measure in the way to win. The result would depend on what the opponent does which is why Minimax and Alpha Beta Pruning are the better choices.
 
 Prompt 3 - Empirical Comparison: Module A
 
