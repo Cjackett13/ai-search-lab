@@ -1,11 +1,9 @@
-import { updateDashboard } from "../shared/utils.js";
-
 let currentState = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 let solutionPath = [];
 let currentStep = 0;
 let tileImages = null;
 
-export function initPuzzleUI() {
+function initPuzzleUI() {
   const board = document.getElementById("puzzleBoard");
 
   if (!board) {
@@ -173,7 +171,7 @@ function solvePuzzle() {
   solutionPath = result.path.map(flattenMatrix);
   currentStep = 0;
 
-  updateDashboard({
+  window.updateDashboard({
     moduleName: "8-Puzzle",
     algorithm,
     decisionTime,
@@ -324,3 +322,5 @@ function setStatus(message) {
     status.textContent = message;
   }
 }
+
+window.initPuzzleUI = initPuzzleUI;
