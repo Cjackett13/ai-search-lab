@@ -63,8 +63,8 @@ But Minimax wouldnt any sense for the 8 puzzle because there is no opponent and 
 
 | Algorithm | Nodes Explored | Solution Length | Time (ms) |
 |-----------|---------------|-----------------|-----------|
-| BFS | 5,961 | 14 moves | 23 |
-| Dijkstra | 5,961 | 14 moves | 203 |
+| BFS | 5,961 | 14 moves | 17 |
+| Dijkstra | 5,961 | 14 moves | 202 |
 | A* | 77 | 14 moves | 2 |
 
 
@@ -84,9 +84,8 @@ Something that surprised us was just how fast A* with heuristic really is. It be
 
 ### Prompt 4 - Empirical Comparison: Module B
 
-<!-- 
+
 WHAT TO WRITE: Report Minimax vs Alpha-Beta node counts on empty board, AI first as X.
-Person 2 needs to provide these numbers from their benchmark tool in Module B.
 
 | Algorithm | Nodes Explored |
 |-----------|---------------|
@@ -99,7 +98,7 @@ INSIGHT: 1-2 sentences on what the pruning rate means in practice.
 
 SCREENSHOT: Insert screenshot of Module B benchmark output here.
 [INSERT SCREENSHOT]
--->
+
 
 Prompt 5 - Trade-off Analysis
 
