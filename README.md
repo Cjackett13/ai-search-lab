@@ -15,7 +15,7 @@ Module B implements Minimax and Alpha-Beta Pruning for an unbeatable Tic-Tac-Toe
 Work was broken down into the following: 
 Julian - Module A
 Christie - Module B
-Ealien - UI & Integration
+Myckheal - UI & Integration
 
 Built by Julian Sanchez, Christie Jackett, and Myckheal Hosang for CAI4002 RVCC 1265 | Summer C.
 
