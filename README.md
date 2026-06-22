@@ -103,5 +103,5 @@ the pruning rate shows that the Alpha-Beta Pruning is able to skip around majori
 |--|-----|----------|----|---------|------------|
 | **Complete?** | Yes | Yes | Yes | Yes | Yes |
 | **Optimal?** | Yes (unit cost) | Yes | Yes (admissible heuristic) | Yes | Yes |
-| **Time complexity** | Exponential — explores all states at each depth | Same as BFS on unit costs, sorting adds overhead | Much better in practice — heuristic skips large portions of the tree | Exponential — full game tree | Better than Minimax — pruning eliminates branches that can't affect the result |
+| **Time complexity** | Exponential - explores all states at each depth | Same as BFS on unit costs, sorting adds overhead | Much better in practice - heuristic skips large portions of the tree | Exponential - full game tree | Better than Minimax — pruning eliminates branches that can't affect the result |
 | **Space complexity** | High — stores all visited states and full frontier | High — same as BFS, also stores costs | Lower than BFS — smaller frontier due to heuristic guidance | High — must store full path from root to current node | Same as Minimax in worst case, better in practice |
