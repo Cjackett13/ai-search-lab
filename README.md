@@ -97,7 +97,7 @@ the pruning rate shows that the Alpha-Beta Pruning is able to skip around majori
 
 
 
-Prompt 5 - Trade-off Analysis
+### Prompt 5 - Trade-off Analysis
 
 | | BFS | Dijkstra | A* | Minimax | Alpha-Beta |
 |--|-----|----------|----|---------|------------|
