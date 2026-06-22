@@ -68,7 +68,7 @@ But Minimax wouldnt any sense for the 8 puzzle because there is no opponent and 
 | A* | 77 | 14 moves | 2 |
 
 
-- BFS and Dijkstra explored the exact same number of nodes which shows that Dijksta priority search doesnt really make a diffrence in this case since all moves cost the same.
+- BFS and Dijkstra explored the exact same number of nodes (5,961 Nodes ) which shows that Dijksta priority search doesnt really make a diffrence in this case since all moves cost the same (1).
 <img width="919" height="668" alt="image" src="https://github.com/user-attachments/assets/a61ab990-a434-4d78-b02b-bc8cc8dabf9d" />
 
 <img width="917" height="673" alt="image" src="https://github.com/user-attachments/assets/dfba63a9-e37b-4e4e-9959-e6413b667b0c" />
@@ -76,11 +76,11 @@ But Minimax wouldnt any sense for the 8 puzzle because there is no opponent and 
 
 What does this tell you about the value of heuristic information?
   
-- A* explored 98.7% fewer nodes than BFS while still finding the exact same 14-move solution.
+- A* explored 98.7% (1 - (77 / 5,961) ) fewer nodes (5,884 fewer nodes) than BFS while still finding the exact same 14-move solution.
   This shows that the Manhatten Distance heuristic doesn't sacrifice results, and it just avoids wasted exploration.
   <img width="919" height="668" alt="image" src="https://github.com/user-attachments/assets/14730b12-b8af-44c4-8338-8a6ab7ba25f2" />
 
-Something that surprised us was just how fast A* with heuristic really is. It beat out the other searched by a huge margin and it isnt the most complex thing to add.
+Something that surprised us was just how fast A* with heuristic really is . It beat out the other searched by a huge margin; it beat BFS by 15 ms making it 8.5 times faster and best Dijkstra by 200ms making it 101 times faster. All this while it not being the most complex thing to add.
 
 ### Prompt 4 - Empirical Comparison: Module B
 
@@ -89,9 +89,9 @@ Something that surprised us was just how fast A* with heuristic really is. It be
 | Minimax   | 549,945 |
 | Alpha-Beta | 34,202 |
 
-Pruning rate: ([549,945] - [34,202]) / [Minimax nodes] × 100 = [X]%
+Pruning rate: (549,945 - 34,202) / 549,945 × 100 = 93.8%
 
-INSIGHT: 1-2 sentences on what the pruning rate means in practice.
+the pruning rate shows that the Alpha-Beta Pruning is able to skip around majority of the game tree (525,742 Nodes) while still getting the exact same optimal move as Minimax. This really means that the AI is doing way less unnecessary work  making it much faster even though the final decision doesn’t change.
 
 <img width="368" height="927" alt="image" src="https://github.com/user-attachments/assets/d897f726-3835-4ead-9b76-e83478d55f1f" />
 
