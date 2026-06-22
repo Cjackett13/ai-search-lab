@@ -1,4 +1,4 @@
-export function updateDashboard({
+function updateDashboard({
   moduleName = "N/A",
   algorithm = "N/A",
   decisionTime = 0,
@@ -6,17 +6,38 @@ export function updateDashboard({
   solutionLength = 0,
   pruningEfficiency = "N/A",
 }) {
-  document.getElementById("metricDecisionTime").textContent =
-    `${decisionTime} ms`;
-  document.getElementById("metricNodesExplored").textContent = nodesExplored;
-  document.getElementById("metricSolutionLength").textContent = solutionLength;
-  document.getElementById("metricPruningEfficiency").textContent =
-    pruningEfficiency;
+  const decisionTimeElement = document.getElementById("metricDecisionTime");
+  const nodesExploredElement = document.getElementById("metricNodesExplored");
+  const solutionLengthElement = document.getElementById("metricSolutionLength");
+  const pruningEfficiencyElement = document.getElementById(
+    "metricPruningEfficiency",
+  );
+  const runSummaryElement = document.getElementById("runSummary");
 
-  document.getElementById("runSummary").textContent = `Module: ${moduleName}
+  if (decisionTimeElement) {
+    decisionTimeElement.textContent = `${decisionTime} ms`;
+  }
+
+  if (nodesExploredElement) {
+    nodesExploredElement.textContent = nodesExplored;
+  }
+
+  if (solutionLengthElement) {
+    solutionLengthElement.textContent = solutionLength;
+  }
+
+  if (pruningEfficiencyElement) {
+    pruningEfficiencyElement.textContent = pruningEfficiency;
+  }
+
+  if (runSummaryElement) {
+    runSummaryElement.textContent = `Module: ${moduleName}
 Algorithm: ${algorithm}
 Decision Time: ${decisionTime} ms
 Nodes Explored: ${nodesExplored}
 Solution Length: ${solutionLength}
 Pruning Efficiency: ${pruningEfficiency}`;
+  }
 }
+
+window.updateDashboard = updateDashboard;

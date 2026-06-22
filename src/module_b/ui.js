@@ -1,17 +1,5 @@
-import {
-  emptyBoard,
-  makeMove,
-  opponentOf,
-  isWinner,
-  winningLine,
-  isTerminal,
-  findBestMove,
-  compareAlgorithms,
-} from './game-logic.js';
-import { updateDashboard } from '../shared/utils.js';
-
 const STEP_DELAY_MS = 600;
-const STYLE_ID = 'ttt-styles';
+const STYLE_ID = "ttt-styles";
 
 // every selector is scoped under #ticTacToeRoot and the variables live on the
 // container, not :root, so nothing here leaks into the shared page
@@ -146,8 +134,8 @@ const MARKUP = `
 
   <div class="ttt-board" data-role="board">
     ${[0, 1, 2, 3, 4, 5, 6, 7, 8]
-      .map(i => `<button class="ttt-cell" data-index="${i}"></button>`)
-      .join('')}
+      .map((i) => `<button class="ttt-cell" data-index="${i}"></button>`)
+      .join("")}
   </div>
 
   <div class="ttt-metrics">
@@ -173,27 +161,33 @@ const MARKUP = `
 `;
 
 function injectStyles() {
-  if (document.getElementById(STYLE_ID)) return;
-  const style = document.createElement('style');
+  if (document.getElementById(STYLE_ID)) {
+    return;
+  }
+
+  const style = document.createElement("style");
   style.id = STYLE_ID;
   style.textContent = STYLES;
   document.head.appendChild(style);
 }
 
 function algorithmLabel(algorithm) {
-  return algorithm === 'alphabeta' ? 'Alpha-Beta' : 'Minimax';
+  return algorithm === "alphabeta" ? "Alpha-Beta" : "Minimax";
 }
 
-export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot')) {
-  if (!root) return;
+function initTicTacToeUI(root = document.getElementById("ticTacToeRoot")) {
+  if (!root) {
+    return;
+  }
 
   injectStyles();
   root.innerHTML = MARKUP;
 
-  const q = selector => root.querySelector(selector);
-  const cellEls = Array.from(root.querySelectorAll('.ttt-cell'));
+  const q = (selector) => root.querySelector(selector);
+  const cellEls = Array.from(root.querySelectorAll(".ttt-cell"));
   const statusEl = q('[data-role="status"]');
   const benchmarkEl = q('[data-role="benchmark"]');
+
   const metricEls = {
     algorithm: q('[data-metric="algorithm"]'),
     move: q('[data-metric="move"]'),
@@ -203,13 +197,13 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
   };
 
   const state = {
-    mode: 'human',
-    board: emptyBoard(),
-    aiPlayer: 'O',
-    humanPlayer: 'X',
-    algorithm: 'minimax',
-    algorithms: { X: 'minimax', O: 'alphabeta' },
-    current: 'X',
+    mode: "human",
+    board: window.emptyBoard(),
+    aiPlayer: "O",
+    humanPlayer: "X",
+    algorithm: "minimax",
+    algorithms: { X: "minimax", O: "alphabeta" },
+    current: "X",
     lastMove: -1,
     over: true,
     busy: false,
@@ -220,8 +214,8 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
       const player = state.board[i];
       cell.textContent = player;
       cell.dataset.player = player;
-      cell.classList.toggle('is-last', i === lastMove);
-      cell.classList.toggle('is-win', !!winLine && winLine.includes(i));
+      cell.classList.toggle("is-last", i === lastMove);
+      cell.classList.toggle("is-win", !!winLine && winLine.includes(i));
     });
   }
 
@@ -229,169 +223,210 @@ export function initTicTacToeUI(root = document.getElementById('ticTacToeRoot'))
     statusEl.textContent = text;
   }
 
-  // show the numbers in our own panel and push them to the shared dashboard
   function reportDecision(result, algorithm) {
     metricEls.algorithm.textContent = algorithmLabel(algorithm);
     metricEls.move.textContent = result.bestMove;
-    metricEls.time.textContent = result.decisionTimeMs.toFixed(2) + ' ms';
+    metricEls.time.textContent = result.decisionTimeMs.toFixed(2) + " ms";
     metricEls.nodes.textContent = result.nodesExplored.toLocaleString();
     metricEls.pruning.textContent = result.pruningEfficiency;
 
-    // only feed the shared dashboard when it is actually on the page (it is in the
-    // integrated app, but not on Module B's standalone page)
-    if (document.getElementById('metricDecisionTime')) {
-      updateDashboard({
-        moduleName: 'Tic-Tac-Toe',
+    if (
+      document.getElementById("metricDecisionTime") &&
+      typeof window.updateDashboard === "function"
+    ) {
+      window.updateDashboard({
+        moduleName: "Tic-Tac-Toe",
         algorithm: algorithmLabel(algorithm),
         decisionTime: Math.round(result.decisionTimeMs),
         nodesExplored: result.nodesExplored,
+        solutionLength: "N/A",
         pruningEfficiency: result.pruningEfficiency,
       });
     }
   }
 
   function outcomeText() {
-    if (isWinner(state.board, 'X')) return 'X wins!';
-    if (isWinner(state.board, 'O')) return 'O wins!';
+    if (window.isWinner(state.board, "X")) {
+      return "X wins!";
+    }
+
+    if (window.isWinner(state.board, "O")) {
+      return "O wins!";
+    }
+
     return "It's a draw.";
   }
 
   function finish() {
     state.over = true;
-    const line = winningLine(state.board, 'X') || winningLine(state.board, 'O');
+    const line =
+      window.winningLine(state.board, "X") ||
+      window.winningLine(state.board, "O");
+
     render(state.lastMove, line);
     setStatus(outcomeText());
   }
 
-  // let the ai think for a sec then drop its move
   function aiTurn(player, algorithm, onDone) {
     state.busy = true;
-    setStatus(algorithmLabel(algorithm) + ' (' + player + ') is thinking…');
+    setStatus(algorithmLabel(algorithm) + " (" + player + ") is thinking…");
 
     setTimeout(() => {
-      const result = findBestMove(state.board, algorithm, player);
-      state.board = makeMove(state.board, result.bestMove, player);
+      const result = window.findBestMove(state.board, algorithm, player);
+      state.board = window.makeMove(state.board, result.bestMove, player);
       state.lastMove = result.bestMove;
+
       reportDecision(result, algorithm);
       render(state.lastMove, null);
+
       state.busy = false;
       onDone();
     }, STEP_DELAY_MS);
   }
 
-  // human vs ai
   function startHumanGame() {
-    state.mode = 'human';
-    state.board = emptyBoard();
-    state.humanPlayer = q('[data-field="human-order"]').value === 'first' ? 'X' : 'O';
-    state.aiPlayer = opponentOf(state.humanPlayer);
+    state.mode = "human";
+    state.board = window.emptyBoard();
+    state.humanPlayer =
+      q('[data-field="human-order"]').value === "first" ? "X" : "O";
+    state.aiPlayer = window.opponentOf(state.humanPlayer);
     state.algorithm = q('[data-field="human-algorithm"]').value;
-    state.current = 'X';
+    state.current = "X";
     state.over = false;
     state.lastMove = -1;
-    render(-1, null);
-    setStatus('Your move (' + state.humanPlayer + ').');
 
-    if (state.aiPlayer === 'X') {
+    render(-1, null);
+    setStatus("Your move (" + state.humanPlayer + ").");
+
+    if (state.aiPlayer === "X") {
       advanceHuman();
     }
   }
 
   function advanceHuman() {
-    if (isTerminal(state.board, 'X', 'O')) {
+    if (window.isTerminal(state.board, "X", "O")) {
       finish();
       return;
     }
+
     if (state.current === state.aiPlayer) {
       aiTurn(state.aiPlayer, state.algorithm, () => {
         state.current = state.humanPlayer;
-        if (isTerminal(state.board, 'X', 'O')) {
+
+        if (window.isTerminal(state.board, "X", "O")) {
           finish();
         } else {
-          setStatus('Your move (' + state.humanPlayer + ').');
+          setStatus("Your move (" + state.humanPlayer + ").");
         }
       });
     } else {
-      setStatus('Your move (' + state.humanPlayer + ').');
+      setStatus("Your move (" + state.humanPlayer + ").");
     }
   }
 
   function onCellClick(event) {
-    if (state.mode !== 'human' || state.over || state.busy) return;
-    if (state.current !== state.humanPlayer) return;
+    if (state.mode !== "human" || state.over || state.busy) {
+      return;
+    }
+
+    if (state.current !== state.humanPlayer) {
+      return;
+    }
 
     const index = Number(event.currentTarget.dataset.index);
-    if (state.board[index] !== '') return;
 
-    state.board = makeMove(state.board, index, state.humanPlayer);
+    if (state.board[index] !== "") {
+      return;
+    }
+
+    state.board = window.makeMove(state.board, index, state.humanPlayer);
     state.lastMove = index;
     render(index, null);
     state.current = state.aiPlayer;
     advanceHuman();
   }
 
-  // ai vs ai
   function startAiGame() {
-    state.mode = 'ai';
-    state.board = emptyBoard();
-    state.current = 'X';
+    state.mode = "ai";
+    state.board = window.emptyBoard();
+    state.current = "X";
     state.over = false;
     state.lastMove = -1;
     state.algorithms = {
       X: q('[data-field="ai-x-algorithm"]').value,
       O: q('[data-field="ai-o-algorithm"]').value,
     };
+
     render(-1, null);
     stepAiGame();
   }
 
   function stepAiGame() {
-    if (isTerminal(state.board, 'X', 'O')) {
+    if (window.isTerminal(state.board, "X", "O")) {
       finish();
       return;
     }
+
     const player = state.current;
+
     aiTurn(player, state.algorithms[player], () => {
-      state.current = opponentOf(player);
+      state.current = window.opponentOf(player);
       stepAiGame();
     });
   }
 
-  // standard empty board test for the report
   function runBenchmark() {
-    const result = compareAlgorithms(emptyBoard(), 'X');
+    const result = window.compareAlgorithms(window.emptyBoard(), "X");
+
     benchmarkEl.textContent = [
-      'Empty board, AI first as X — first move only',
-      '',
-      'Minimax    move=' + result.minimax.bestMove + '  nodes=' + result.minimax.nodesExplored.toLocaleString(),
-      'Alpha-Beta move=' + result.alphabeta.bestMove + '  nodes=' + result.alphabeta.nodesExplored.toLocaleString(),
-      '',
-      'Same move?  ' + (result.agree ? 'YES' : 'NO'),
-      'Pruning:    ' + result.percentPruned.toFixed(1) + '% fewer nodes',
-    ].join('\n');
+      "Empty board, AI first as X — first move only",
+      "",
+      "Minimax    move=" +
+        result.minimax.bestMove +
+        "  nodes=" +
+        result.minimax.nodesExplored.toLocaleString(),
+      "Alpha-Beta move=" +
+        result.alphabeta.bestMove +
+        "  nodes=" +
+        result.alphabeta.nodesExplored.toLocaleString(),
+      "",
+      "Same move?  " + (result.agree ? "YES" : "NO"),
+      "Pruning:    " + result.percentPruned.toFixed(1) + "% fewer nodes",
+    ].join("\n");
   }
 
   function selectMode(mode) {
     state.mode = mode;
     state.over = true;
-    root.querySelectorAll('.ttt-tab').forEach(tab => {
-      tab.classList.toggle('is-active', tab.dataset.mode === mode);
+
+    root.querySelectorAll(".ttt-tab").forEach((tab) => {
+      tab.classList.toggle("is-active", tab.dataset.mode === mode);
     });
-    root.querySelectorAll('.ttt-panel').forEach(panel => {
-      panel.classList.toggle('is-hidden', panel.dataset.panel !== mode);
+
+    root.querySelectorAll(".ttt-panel").forEach((panel) => {
+      panel.classList.toggle("is-hidden", panel.dataset.panel !== mode);
     });
-    state.board = emptyBoard();
+
+    state.board = window.emptyBoard();
     render(-1, null);
-    setStatus(mode === 'human' ? 'Start a Human vs AI game.' : 'Start an AI vs AI game.');
+    setStatus(
+      mode === "human"
+        ? "Start a Human vs AI game."
+        : "Start an AI vs AI game.",
+    );
   }
 
-  cellEls.forEach(cell => cell.addEventListener('click', onCellClick));
-  root.querySelectorAll('.ttt-tab').forEach(tab => {
-    tab.addEventListener('click', () => selectMode(tab.dataset.mode));
-  });
-  q('[data-action="human-start"]').addEventListener('click', startHumanGame);
-  q('[data-action="ai-start"]').addEventListener('click', startAiGame);
-  q('[data-action="benchmark"]').addEventListener('click', runBenchmark);
+  cellEls.forEach((cell) => cell.addEventListener("click", onCellClick));
 
-  selectMode('human');
+  root.querySelectorAll(".ttt-tab").forEach((tab) => {
+    tab.addEventListener("click", () => selectMode(tab.dataset.mode));
+  });
+
+  q('[data-action="human-start"]').addEventListener("click", startHumanGame);
+  q('[data-action="ai-start"]').addEventListener("click", startAiGame);
+  q('[data-action="benchmark"]').addEventListener("click", runBenchmark);
+
+  selectMode("human");
 }
+
+window.initTicTacToeUI = initTicTacToeUI;
